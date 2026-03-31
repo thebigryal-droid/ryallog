@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ryal FitHub | Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #9dc08b; --bg: #ffffff; --card: #ffffff; --text: #1d1d1f; --border: #e0e0d1; --danger: #ff7675; --info: #74b9ff; --warning: #ffb142; }
+        body { margin:0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding: 20px 15px 80px; }
+        header { text-align: center; margin-bottom: 20px; }
+        header h1 { font-size: 22px; font-weight: 800; color: #1d1d1f; margin: 0; letter-spacing: -0.5px; }
+
+        /* CARDS */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: var(--card); padding: 15px 5px; border-radius: 12px; text-align: center; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .stat-label { font-size: 8px; color: #888; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
+        .stat-val { display: block; font-size: 15px; font-weight: 800; color: var(--primary); margin-top: 5px; }
+
+        /* SECTIONS */
+        .section { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        h2 { font-size: 11px; text-transform: uppercase; color: #1d1d1f; display: flex; justify-content: space-between; cursor: pointer; margin: 0; letter-spacing: 1px; }
+        h2 span { font-size: 10px; color: var(--primary); transition: 0.3s; }
+        .collapsible { display: none; padding-top: 15px; margin-top: 12px; border-top: 1px solid var(--border); }
+        .active .collapsible { display: block; }
+        .active h2 span { transform: rotate(180deg); }
+
+        /* INPUTS & BUTTONS */
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; margin-bottom: 10px; box-sizing: border-box; background: #fafafa; outline: none; }
+        input:focus, select:focus { border-color: var(--primary); background: #fff; }
+        label { font-size: 9px; font-weight: 800; color: #888; margin-bottom: 4px; display: block; text-transform: uppercase; }
+        
+        button { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
+        .btn-main { background: var(--primary); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-info { background: var(--info); color: white; }
+        .btn-sub { background: #f0f4ee; color: #6b8e5a; font-size: 10px; border: 1px solid var(--border); padding: 6px 12px; width: auto; }
+        .btn-del { background: var(--danger); color: white; padding: 4px 8px; font-size: 9px; border-radius: 4px; width: auto; }
+        .btn-edit { background: var(--warning); color: white; padding: 4px 8px; font-size: 9px; border-radius: 4px; width: auto; }
+
+        /* TABLE & ROSTER */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; font-size: 10px; color: #888; padding-bottom: 10px; text-transform: uppercase; }
+        td { padding: 12px 5px; border-top: 1px solid var(--border); font-size: 13px; }
+        .client-link { color: var(--primary); font-weight: 800; cursor: pointer; text-decoration: none; }
+        .history-pane { background: #fafafa; padding: 10px; border-radius: 8px; border: 1px solid #eee; margin-top: 5px; font-size: 11px; }
+        .history-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; }
+
+        /* OVERLAY & PHOTOS */
+        #clientOverlay { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 5000; padding: 20px; overflow-y: auto; }
+        .scout-card { background: #fff; border: 1px solid var(--border); padding: 15px; border-radius: 12px; border-left: 5px solid var(--primary); margin: 15px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .plan-box { background: #f4f7f1; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; color: #2d3436; margin-top: 10px; }
+        .photo-grid { display: flex; gap: 10px; margin-top: 10px; }
+        .photo-box { flex: 1; border: 1px dashed var(--border); border-radius: 8px; text-align: center; padding: 10px; background: #fafafa; }
+        .photo-box img { max-width: 100%; border-radius: 4px; margin-top: 8px; }
+
+        /* WORKOUT SPLIT UI */
+        .ex-tag { background: #eee; color: #555; padding: 8px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
+        .ex-tag.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .workout-title { font-size: 12px; font-weight: 800; color: #333; cursor: pointer; margin-top: 12px; padding: 8px; background: #f4f7f1; border-radius: 6px; display: flex; justify-content: space-between; }
+
+        /* REVENUE BREAKDOWN */
+        .rev-month { font-weight: 800; font-size: 14px; margin-top: 15px; display: flex; justify-content: space-between; border-bottom: 2px solid var(--border); padding-bottom: 5px; }
+        .rev-split { display: flex; gap: 15px; font-size: 10px; margin-top: 5px; color: #555; flex-wrap: wrap; }
+        .daily-rev { display: none; background: #fafafa; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 11px; border: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Ryal FitHub</h1>
+    <div style="margin-top: 10px; display: flex; justify-content: center; gap: 10px;">
+        <button class="btn-info" onclick="exportData()" style="width: auto; padding: 6px 12px; font-size: 11px;">☁️ Backup Data</button>
+        
+        <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+        <button class="btn-warning" onclick="document.getElementById('importFile').click()" style="width: auto; padding: 6px 12px; font-size: 11px; background: var(--warning); color: white; border: none; border-radius: 8px; font-weight: 700;">📂 Load Backup</button>
+    </div>
+</header>
+
+
+<div class="stats-grid">
+    <div class="stat-card"><span class="stat-label">SESSIONS</span><span id="statSessions" class="stat-val">0</span></div>
+    <div class="stat-card"><span class="stat-label">SHIFT</span><span id="statShift" class="stat-val">-</span></div>
+    <div class="stat-card"><span class="stat-label">TOTAL EARNINGS</span><span id="statRevenue" class="stat-val">₹0</span></div>
+</div>
+
+<div class="section active" id="sec-att">
+    <h2 onclick="toggleSec('sec-att')">MY ATTENDANCE <span>▲</span></h2>
+    <div class="collapsible">
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1"><label>Date</label><input type="date" id="attDate"></div>
+            <div style="flex:1"><label>In Time</label><input type="time" id="attIn" value="06:00"></div>
+            <div style="flex:1"><label>Out Time</label><input type="time" id="attOut" value="12:00"></div>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:5px;">
+            <button class="btn-main" onclick="logAtt('Present')">Present</button>
+            <button class="btn-info" onclick="logAtt('Week Off')">Week Off</button>
+            <button class="btn-danger" onclick="logAtt('Absent')">Absent</button>
+        </div>
+        <div id="attList" class="history-pane" style="margin-top:15px; max-height:150px; overflow-y:auto;"></div>
+    </div>
+</div>
+
+<div class="section" id="sec-rev">
+    <h2 onclick="toggleSec('sec-rev')">REVENUE BREAKDOWN <span>▲</span></h2>
+    <div class="collapsible" id="revView">No logs yet.</div>
+</div>
+
+<div class="section" id="sec-prof">
+    <h2 onclick="toggleSec('sec-prof')">CLIENT PROFILE SETUP <span>▲</span></h2>
+    <div class="collapsible">
+        <input type="text" id="regName" placeholder="Full Name">
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1"><label>Profession</label><input type="text" id="regProf" placeholder="e.g. IT"></div>
+            <div style="flex:1"><label>Activity/Sport</label><input type="text" id="regAct" placeholder="e.g. Runner"></div>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1"><label>Package ₹</label><input type="number" id="regPay"></div>
+            <div style="flex:1"><label>Total Sessions</label><input type="number" id="regSess"></div>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1">
+                <label>GST %</label>
+                <select id="regGst"><option value="0">0%</option><option value="0.05">5%</option><option value="0.18">18%</option></select>
+            </div>
+            <div style="flex:1">
+                <label>Retention %</label>
+                <select id="regRet"><option value="0.40" selected>40%</option><option value="0.45">45%</option><option value="0.50">50%</option><option value="1">100%</option></select>
+            </div>
+        </div>
+        <button class="btn-main" onclick="regClient()">Create Official Profile</button>
+    </div>
+</div>
+
+<div class="section active" id="sec-rost">
+    <h2 onclick="toggleSec('sec-rost')">ACTIVE ROSTER <span>▲</span></h2>
+    <div class="collapsible">
+        <table id="rosterTable">
+            <thead><tr><th>Client Name</th><th>Progress</th><th>Action</th></tr></thead>
+            <tbody id="rosterView"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="clientOverlay">
+    <button class="btn-sub" onclick="document.getElementById('clientOverlay').style.display='none'">← Back to Dashboard</button>
+    <h1 id="ovName" style="margin:15px 0 5px 0; font-size:22px; font-weight:800;">Name</h1>
+    <p id="ovTags" style="font-size:11px; color:#888; font-weight:600; text-transform:uppercase; margin-bottom:20px;"></p>
+
+    <div class="section active">
+        <h2 style="font-size:10px;">InBody (BCA) Analyzer</h2>
+        <div style="display:flex; gap:8px; margin-top:10px;">
+            <div style="flex:1"><label>Weight (kg)</label><input type="number" id="inWeight"></div>
+            <div style="flex:1"><label>SMM (kg)</label><input type="number" id="inSmm" placeholder="Muscle"></div>
+            <div style="flex:1"><label>PBF (%)</label><input type="number" id="inPbf" placeholder="Fat %"></div>
+        </div>
+        <button class="btn-main" onclick="analyzeInBody()">Generate Clinical Plan</button>
+    </div>
+
+    <div class="scout-card" id="scoutEngine" style="display:none;">
+        <h4 style="margin:0 0 10px 0; font-size:11px; color:var(--primary); letter-spacing:1px; text-transform:uppercase;">🔬 Scientific Protocol</h4>
+        <div id="ovScout"></div>
+    </div>
+
+    <div class="section active">
+        <h2 style="font-size:10px;">Progress Photos</h2>
+        <div class="photo-grid">
+            <div class="photo-box">
+                <label>Before</label>
+                <input type="file" id="fileBefore" accept="image/*" style="font-size:9px; padding:5px; border:none; background:transparent;" onchange="handlePhotoUpload('before')">
+                <img id="imgBefore" style="display:none;">
+            </div>
+            <div class="photo-box">
+                <label>After</label>
+                <input type="file" id="fileAfter" accept="image/*" style="font-size:9px; padding:5px; border:none; background:transparent;" onchange="handlePhotoUpload('after')">
+                <img id="imgAfter" style="display:none;">
+            </div>
+        </div>
+    </div>
+
+    <div class="section active">
+        <h2 style="font-size:10px;">Record Workout</h2>
+        <div style="margin-top:10px;">
+            <input type="date" id="logDate">
+            
+            <input type="text" id="logWorkoutName" placeholder="Name this Workout (e.g., Push Day, Session 12)">
+
+            <select id="splitSelect" onchange="loadSplit(this.value)">
+                <option value="">-- Or Select a Split Template --</option>
+                <option value="Pull (Back & Biceps)">Pull (Back & Biceps)</option>
+                <option value="Push (Chest, Shoulders, Triceps)">Push (Chest, Shoulders, Triceps)</option>
+                <option value="Legs (Quads, Hams, Glutes)">Legs (Quads, Hams, Glutes)</option>
+                <option value="Core & Functional">Core & Functional</option>
+            </select>
+            
+            <div id="exTagsContainer" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px;"></div>
+            
+            <input type="text" id="exSearch" placeholder="Search specific exercise..." oninput="searchEx(this.value)">
+            <div id="searchRes" style="background:#fff; border:1px solid #eee; display:none; max-height:120px; overflow-y:auto; border-radius:8px; margin-bottom:10px;"></div>
+
+            <div id="setForm" style="display:none; padding:12px; background:#fafafa; border-radius:8px; border:1px solid #eee;">
+                <b id="curEx" style="font-size:12px; color:var(--primary);">Selected</b>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                    <input type="number" id="inW" placeholder="Kg">
+                    <input type="number" id="inR" placeholder="Reps">
+                    <button class="btn-main" onclick="addSet()" style="width:auto; padding:0 15px;">Add Set</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* --- CLOUD BACKUP & RESTORE --- */
+    function exportData() {
+        // Gather all your current local storage data
+        const backupData = {
+            clients: JSON.parse(localStorage.getItem('ryal_pro_v9')) || [],
+            shifts: JSON.parse(localStorage.getItem('ryal_shifts_v9')) || []
+        };
+        
+        // Convert to a file format
+        const dataStr = JSON.stringify(backupData);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        
+        // Create a temporary link and trigger the download
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `RyalFit_Backup_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function importData(event) {
+        const file = event.target.files[0];
+        if(!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                
+                // Verify the file has the right data structure
+                if(importedData.clients && importedData.shifts) {
+                    if(confirm("This will overwrite your current data. Are you sure?")) {
+                        localStorage.setItem('ryal_pro_v9', JSON.stringify(importedData.clients));
+                        localStorage.setItem('ryal_shifts_v9', JSON.stringify(importedData.shifts));
+                        alert("Backup loaded successfully!");
+                        location.reload(); // Refresh the page to show new data
+                    }
+                } else {
+                    alert("Invalid backup file. Missing clients or shifts data.");
+                }
+            } catch(err) {
+                alert("Error reading the file. Make sure it is a valid JSON backup.");
+            }
+            // Reset the input so you can select the same file again if needed
+            event.target.value = ""; 
+        };
+        reader.readAsText(file);
+    }
+
+
+    let clients = JSON.parse(localStorage.getItem('ryal_pro_v9')) || [];
+    let shifts = JSON.parse(localStorage.getItem('ryal_shifts_v9')) || [];
+    const today = new Date().toISOString().split('T')[0];
+    let curID = null;
+    let curExName = "";
+
+    const workoutDB = {
+        "Pull (Back & Biceps)": ["Pull-ups", "Lat Pulldown", "Seated Cable Row", "Barbell Row", "Dumbbell Row", "Face Pulls", "Barbell Bicep Curl", "Hammer Curl", "Preacher Curl"],
+        "Push (Chest, Shoulders, Triceps)": ["Bench Press", "Incline DB Press", "Cable Crossover", "Overhead Press", "Lateral Raises", "Front Raises", "Triceps Pushdown", "Skull Crushers", "Dips"],
+        "Legs (Quads, Hams, Glutes)": ["Barbell Squats", "Leg Press", "Leg Extensions", "Romanian Deadlift", "Hamstring Curls", "Bulgarian Split Squats", "Calf Raises", "Hip Thrusts"],
+        "Core & Functional": ["Plank", "Russian Twists", "Leg Raises", "Ab Wheel Rollout", "Kettlebell Swings", "Box Jumps", "Battle Ropes"]
+    };
+
+    document.getElementById('attDate').value = today;
+    document.getElementById('logDate').value = today;
+
+    function toggleSec(id) { document.getElementById(id).classList.toggle('active'); }
+
+    /* --- 1. ATTENDANCE & HALF DAY LOGIC --- */
+    function logAtt(status) {
+        const d = document.getElementById('attDate').value;
+        const inT = document.getElementById('attIn').value;
+        const outT = document.getElementById('attOut').value;
+        
+        const [inH, inM] = inT.split(':').map(Number);
+        const [outH, outM] = outT.split(':').map(Number);
+        const totalMins = (outH * 60 + outM) - (inH * 60 + inM);
+        
+        let isLate = false;
+        let isHalfDay = false;
+
+        if (status === 'Present' && totalMins > 0) {
+            if (totalMins <= 240) { // 4 Hours or less
+                isHalfDay = true;
+                alert(`Logged ${Math.floor(totalMins/60)}h ${totalMins%60}m. This is marked as a HALF DAY shift.`);
+            } else if (totalMins < 350) { // Under 5h 50m
+                isLate = true; 
+                alert(`Logged ${Math.floor(totalMins/60)}h ${totalMins%60}m. This is marked as LATE (< 5h 50m).`);
+            }
+        }
+
+        const year = parseInt(d.split('-')[0]);
+        const month = parseInt(d.split('-')[1]);
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const baseWage = 10000 / daysInMonth;
+
+        let pay = 0;
+        if (status === 'Present' || status === 'Week Off') pay = baseWage;
+        
+        shifts.push({ id: Date.now(), date: d, inTime: inT, outTime: outT, status, isLate, isHalfDay, pay });
+        localStorage.setItem('ryal_shifts_v9', JSON.stringify(shifts));
+        render();
+    }
+
+    function delShift(id) {
+        shifts = shifts.filter(s => s.id !== id);
+        localStorage.setItem('ryal_shifts_v9', JSON.stringify(shifts));
+        render();
+    }
+
+    function regClient() {
+        const name = document.getElementById('regName').value;
+        if(!name) return;
+        clients.push({
+            id: Date.now(), name,
+            prof: document.getElementById('regProf').value,
+            act: document.getElementById('regAct').value,
+            pay: parseFloat(document.getElementById('regPay').value) || 0,
+            sess: parseInt(document.getElementById('regSess').value) || 1,
+            gst: parseFloat(document.getElementById('regGst').value) || 0,
+            ret: parseFloat(document.getElementById('regRet').value) || 0.4,
+            logs: {}, bca: [], photos: {}
+        });
+        localStorage.setItem('ryal_pro_v9', JSON.stringify(clients));
+        alert("Client Registered!"); render();
+    }
+
+    function toggleHistory(id) {
+        const row = document.getElementById(`hist-${id}`);
+        row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+    }
+
+    // NEW: TOGGLE WORKOUT GROUP
+    function toggleGroup(id, el) {
+        const div = document.getElementById(id);
+        if (div.style.display === 'none') {
+            div.style.display = 'block';
+            el.innerHTML = el.innerHTML.replace('▶', '▼');
+        } else {
+            div.style.display = 'none';
+            el.innerHTML = el.innerHTML.replace('▼', '▶');
+        }
+    }
+
+    function editLog(cId, date, logId) {
+        const c = clients.find(x => x.id === cId);
+        const log = c.logs[date].find(x => x.id === logId);
+        if(!log) return;
+        let newW = prompt(`Edit Weight for ${log.name} (current: ${log.w}kg):`, log.w);
+        if(newW === null) return; 
+        let newR = prompt(`Edit Reps for ${log.name} (current: ${log.r}):`, log.r);
+        if(newR === null) return;
+        log.w = newW; log.r = newR;
+        localStorage.setItem('ryal_pro_v9', JSON.stringify(clients));
+        render();
+    }
+
+    function delLog(cId, date, logId) {
+        if(!confirm("Delete this set?")) return;
+        const c = clients.find(x => x.id === cId);
+        c.logs[date] = c.logs[date].filter(l => l.id !== logId);
+        if (c.logs[date].length === 0) delete c.logs[date];
+        localStorage.setItem('ryal_pro_v9', JSON.stringify(clients));
+        render();
+    }
+
+    /* --- OVERLAY, BCA & PHOTOS --- */
+    function openOv(id) {
+        curID = id; const c = clients.find(x => x.id === id);
+        document.getElementById('clientOverlay').style.display = 'block';
+        document.getElementById('ovName').innerText = c.name;
+        document.getElementById('ovTags').innerText = `${c.prof || 'General'} | ${c.act || 'Fitness'}`;
+        
+        document.getElementById('inWeight').value = ""; document.getElementById('inSmm').value = ""; document.getElementById('inPbf').value = "";
+        document.getElementById('scoutEngine').style.display = "none";
+        document.getElementById('logWorkoutName').value = "";
+        document.getElementById('splitSelect').value = "";
+        document.getElementById('exTagsContainer').innerHTML = "";
+        document.getElementById('setForm').style.display = 'none';
+
+        if(c.bca.length > 0) {
+            document.getElementById('inWeight').value = c.bca[0].w;
+            document.getElementById('inSmm').value = c.bca[0].smm;
+            document.getElementById('inPbf').value = c.bca[0].pbf;
+            analyzeInBody();
+        }
+
+        // Load Photos
+        const imgB = document.getElementById('imgBefore');
+        const imgA = document.getElementById('imgAfter');
+        if(c.photos && c.photos.before) { imgB.src = c.photos.before; imgB.style.display='block'; } else { imgB.style.display='none'; }
+        if(c.photos && c.photos.after) { imgA.src = c.photos.after; imgA.style.display='block'; } else { imgA.style.display='none'; }
+    }
+
+    // NEW: COMPRESS AND SAVE PHOTO
+    function handlePhotoUpload(type) {
+        const file = document.getElementById(type === 'before' ? 'fileBefore' : 'fileAfter').files[0];
+        if(!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                // Resize to prevent LocalStorage Quota Exceeded error
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 300; 
+                const scaleSize = MAX_WIDTH / img.width;
+                canvas.width = MAX_WIDTH;
+                canvas.height = img.height * scaleSize;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                const c = clients.find(x => x.id === curID);
+                if(!c.photos) c.photos = {};
+                c.photos[type] = canvas.toDataURL('image/jpeg', 0.6); 
+                
+                localStorage.setItem('ryal_pro_v9', JSON.stringify(clients));
+                openOv(curID); // Reload overlay to show images
+            }
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function analyzeInBody() {
+        const c = clients.find(x => x.id === curID);
+        const w = parseFloat(document.getElementById('inWeight').value) || 0;
+        const smm = parseFloat(document.getElementById('inSmm').value) || 0;
+        const pbf = parseFloat(document.getElementById('inPbf').value) || 0;
+        
+        if(w>0 && smm>0 && pbf>0) {
+            if(c.bca.length === 0 || c.bca[0].w !== w || c.bca[0].pbf !== pbf) {
+                c.bca.unshift({ date: today, w, smm, pbf });
+                localStorage.setItem('ryal_pro_v9', JSON.stringify(clients));
+            }
+        }
+        const act = (c.act || "").toLowerCase(); const prof = (c.prof || "").toLowerCase();
+        let goal = pbf > 22 ? "Fat Loss & Metabolic Conditioning" : "Hypertrophy & Strength Recomposition";
+        let scout = `<div class="plan-box"><b>InBody Diagnosis:</b> Based on PBF of ${pbf}%, primary goal is ${goal}.<br><br>`;
+        if(act.includes("run")) { scout += `<b>Runner Protocol:</b><br>- <b>Mechanism:</b> High GRF on joints.<br>- <b>Prescription:</b> Heavy Slow Resistance (HSR) on Soleus. Unilateral stability.`; } 
+        else if(prof.includes("it") || prof.includes("soft") || prof.includes("desk")) { scout += `<b>Desk-Worker Protocol:</b><br>- <b>Mechanism:</b> Shortened Hip Flexors, Lengthened Rhomboids.<br>- <b>Prescription:</b> Prioritize Posterior Chain (Deadlifts, Face Pulls).`; } 
+        else { scout += `<b>General Protocol:</b><br>- <b>Mechanism:</b> Progressive Overload required for SMM growth.<br>- <b>Prescription:</b> Focus on compound multi-joint movements.`; }
+        scout += `</div>`;
+        document.getElementById('ovScout').innerHTML = scout;
+        document.getElementById('scoutEngine').style.display = "block";
+    }
+
+    function loadSplit(splitName) {
+        const container = document.getElementById('exTagsContainer');
+        document.getElementById('setForm').style.display = 'none';
+        if(!splitName) { container.innerHTML = ""; return; }
+        
+        // Auto-fill workout name if empty
+        const wNameInput = document.getElementById('logWorkoutName');
+        if(wNameInput.value === "") wNameInput.value = splitName;
+
+        const exercises = workoutDB[splitName];
+        container.innerHTML = exercises.map(ex => `<div class="ex-tag" onclick="selSplitEx('${ex}', this)">${ex}</div>`).join("");
+    }
+
+    function selSplitEx(name, element) {
+        document.querySelectorAll('.ex-tag').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        curExName = name; 
+        document.getElementById('curEx').innerText = name;
+        document.getElementById('setForm').style.display='block'; 
+    }
+
+    async function searchEx(q) {
+        if(q.length < 3) return;
+        const res = await fetch(`https://wger.de/api/v2/exercise/search/?term=${q}`);
+        const data = await res.json();
+        const box = document.getElementById('searchRes');
+        box.innerHTML = data.suggestions.map(s => `<div style="padding:10px; border-bottom:1px solid #eee; cursor:pointer;" onclick="selEx('${s.value}')">${s.value}</div>`).join("");
+        box.style.display = 'block';
+    }
+
+    function selEx(n) { 
+        curExName = n; document.getElementById('curEx').innerText = n;
+        document.getElementById('setForm').style.display='block'; 
+        document.getElementById('searchRes').style.display='none';
+    }
+
+    function addSet() {
+        const d = document.getElementById('logDate').value;
+        const wName = document.getElementById('logWorkoutName').value || "General Workout"; // Added Workout Name
+        const c = clients.find(x => x.id === curID);
+        if(!c.logs[d]) c.logs[d] = [];
+        
+        c.logs[d].push({ 
+            id: Date.now(), 
+            workoutName: wName, 
+            name: curExName, 
+            w: document.getElementById('inW').value, 
+            r: document.getElementById('inR').value 
+        });
+        
+        localStorage.setItem('ryal_pro_v9', JSON.stringify(clients));
+        alert("Set Added! Close overlay to see it in Roster History.");
+        render();
+    }
+
+    function toggleDailyRev(m) {
+        const el = document.getElementById(`daily-rev-${m}`);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function render() {
+        // Attendance Status Visuals
+        document.getElementById('attList').innerHTML = shifts.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(s => `
+            <div class="history-row">
+                <span>${s.date} | <b>${s.status}</b> 
+                ${s.isLate ? '<span style="color:var(--danger)">(LATE)</span>' : ''}
+                ${s.isHalfDay ? '<span style="color:var(--warning)">(HALF DAY)</span>' : ''}
+                </span>
+                <button class="btn-del" onclick="delShift(${s.id})">Del</button>
+            </div>
+        `).join("");
+
+        // Roster Grouped by Workout Name
+        let rosterHtml = "";
+        clients.forEach(c => {
+            let totalSessionsDone = Object.keys(c.logs).length; 
+            let histRows = "";
+            
+            Object.keys(c.logs).sort().reverse().forEach(date => {
+                histRows += `<div style="font-weight:800; margin-top:10px; border-bottom:1px solid #e0e0d1; color:var(--primary); padding-bottom:2px;">${date}</div>`;
+                
+                // Group Sets by Workout Name
+                let workouts = {};
+                c.logs[date].forEach(log => {
+                    const wName = log.workoutName || "General Workout";
+                    if(!workouts[wName]) workouts[wName] = [];
+                    workouts[wName].push(log);
+                });
+
+                Object.keys(workouts).forEach(wName => {
+                    // Generate a safe unique ID for the toggle container
+                    const safeId = `w-${c.id}-${date}-${wName.replace(/[^a-zA-Z0-9]/g, '')}`;
+                    
+                    histRows += `
+                    <div class="workout-title" onclick="toggleGroup('${safeId}', this)">
+                        <span>▶ ${wName}</span>
+                    </div>
+                    <div id="${safeId}" style="display:none; padding-left:10px; border-left:2px solid var(--primary); margin-top:5px; background: #fafafa;">
+                    `;
+                    
+                    workouts[wName].forEach(log => {
+                        histRows += `
+                        <div class="history-row">
+                            <span>${log.name}: ${log.w}kg x ${log.r}</span>
+                            <div style="display:flex; gap:5px;">
+                                <button class="btn-edit" onclick="editLog(${c.id}, '${date}', ${log.id})">Edit</button>
+                                <button class="btn-del" onclick="delLog(${c.id}, '${date}', ${log.id})">✕</button>
+                            </div>
+                        </div>`;
+                    });
+                    histRows += `</div>`;
+                });
+            });
+
+            rosterHtml += `
+            <tr>
+                <td><span class="client-link" onclick="openOv(${c.id})">${c.name}</span></td>
+                <td><b>${totalSessionsDone}</b> / ${c.sess}</td>
+                <td style="text-align:right;"><button class="btn-sub" onclick="toggleHistory(${c.id})">History</button></td>
+            </tr>
+            <tr id="hist-${c.id}" style="display:none;">
+                <td colspan="3"><div class="history-pane">${histRows || 'No logs yet.'}</div></td>
+            </tr>`;
+        });
+        document.getElementById('rosterView').innerHTML = rosterHtml;
+
+        // Revenue Math (Includes Half Day Math)
+        let monthly = {};
+        
+        shifts.forEach(s => {
+            const m = s.date.slice(0, 7);
+            if(!monthly[m]) monthly[m] = { sal: 0, pt: 0, lateCount: 0, halfDayCount: 0, days: {} };
+            monthly[m].sal += (s.pay || 0);
+            if(s.isLate) monthly[m].lateCount += 1;
+            if(s.isHalfDay) monthly[m].halfDayCount += 1;
+            
+            if(!monthly[m].days[s.date]) monthly[m].days[s.date] = { sal: 0, pt: 0 };
+            monthly[m].days[s.date].sal += (s.pay || 0);
+        });
+
+        clients.forEach(c => {
+            const basePrice = (c.pay || 0) / (1 + (c.gst || 0));
+            const perSessionPay = (basePrice * (c.ret || 0)) / (c.sess || 1);
+            
+            Object.keys(c.logs).forEach(date => {
+                if(c.logs[date].length === 0) return;
+                const m = date.slice(0, 7);
+                if(!monthly[m]) monthly[m] = { sal: 0, pt: 0, lateCount: 0, halfDayCount: 0, days: {} };
+                
+                monthly[m].pt += perSessionPay;
+                if(!monthly[m].days[date]) monthly[m].days[date] = { sal: 0, pt: 0 };
+                monthly[m].days[date].pt += perSessionPay;
+            });
+        });
+
+        let revHtml = "";
+        let todayMonth = today.slice(0,7);
+        let currRev = 0;
+
+        Object.keys(monthly).sort().reverse().forEach(m => {
+            const data = monthly[m];
+            const year = parseInt(m.split('-')[0]);
+            const monthNum = parseInt(m.split('-')[1]);
+            const baseWage = 10000 / new Date(year, monthNum, 0).getDate();
+            
+            // Penalty Math combining Lates (every 3) and Half Days
+            const latePen = Math.floor(data.lateCount / 3) * (baseWage * 0.5);
+            const halfDayPen = data.halfDayCount * (baseWage * 0.5);
+            const penalty = latePen + halfDayPen;
+            
+            const net = (data.sal + data.pt) - penalty;
+            if(m === todayMonth) currRev = net;
+
+            let dayHtml = "";
+            Object.keys(data.days).sort().reverse().forEach(d => {
+                dayHtml += `<div class="history-row"><span>${d}</span> <span>Sal: ₹${data.days[d].sal.toFixed(0)} | PT: ₹${data.days[d].pt.toFixed(0)}</span></div>`;
+            });
+
+            revHtml += `
+            <div>
+                <div class="rev-month" onclick="toggleDailyRev('${m}')" style="cursor:pointer;">
+                    <span>${m} ▾</span> <span style="color:var(--primary);">₹${net.toFixed(0)}</span>
+                </div>
+                <div class="rev-split">
+                    <span>SAL: <b>₹${data.sal.toFixed(0)}</b></span>
+                    <span>PT: <b>₹${data.pt.toFixed(0)}</b></span>
+                    ${penalty > 0 ? `<span style="color:var(--danger)">PENALTY: <b>-₹${penalty.toFixed(0)}</b></span>` : ''}
+                </div>
+                <div class="daily-rev" id="daily-rev-${m}">${dayHtml}</div>
+            </div>`;
+        });
+        document.getElementById('revView').innerHTML = revHtml || "No revenue data.";
+        document.getElementById('statRevenue').innerText = `₹${currRev.toFixed(0)}`;
+        
+        document.getElementById('statSessions').innerText = clients.reduce((count, client) => {
+            return count + (client.logs[today] && client.logs[today].length > 0 ? 1 : 0);
+        }, 0);
+        const s = shifts.find(x => x.date === today);
+        document.getElementById('statShift').innerText = s ? s.status : "-";
+    }
+
+    render();
+</script>
+</body>
+</html>
