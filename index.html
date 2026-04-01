@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ryal FitHub | Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #9dc08b; --bg: #ffffff; --card: #ffffff; --text: #1d1d1f; --border: #e0e0d1; --danger: #ff7675; --info: #74b9ff; --warning: #ffb142; }
+        body { margin:0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding: 20px 15px 80px; }
+        header { text-align: center; margin-bottom: 20px; }
+        header h1 { font-size: 22px; font-weight: 800; color: #1d1d1f; margin: 0; letter-spacing: -0.5px; }
+
+        /* CARDS */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: var(--card); padding: 15px 5px; border-radius: 12px; text-align: center; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .stat-label { font-size: 8px; color: #888; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
+        .stat-val { display: block; font-size: 15px; font-weight: 800; color: var(--primary); margin-top: 5px; }
+
+        /* SECTIONS */
+        .section { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        h2 { font-size: 11px; text-transform: uppercase; color: #1d1d1f; display: flex; justify-content: space-between; cursor: pointer; margin: 0; letter-spacing: 1px; }
+        h2 span { font-size: 10px; color: var(--primary); transition: 0.3s; }
+        .collapsible { display: none; padding-top: 15px; margin-top: 12px; border-top: 1px solid var(--border); }
+        .active .collapsible { display: block; }
+        .active h2 span { transform: rotate(180deg); }
+
+        /* INPUTS & BUTTONS */
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; margin-bottom: 10px; box-sizing: border-box; background: #fafafa; outline: none; }
+        input:focus, select:focus { border-color: var(--primary); background: #fff; }
+        label { font-size: 9px; font-weight: 800; color: #888; margin-bottom: 4px; display: block; text-transform: uppercase; }
+        
+        button { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 13px; }
+        .btn-main { background: var(--primary); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-info { background: var(--info); color: white; }
+        .btn-wa { background: #25D366; color: white; margin-bottom: 15px; }
+        .btn-sub { background: #f0f4ee; color: #6b8e5a; font-size: 10px; border: 1px solid var(--border); padding: 6px 12px; width: auto; }
+        .btn-del { background: var(--danger); color: white; padding: 4px 8px; font-size: 9px; border-radius: 4px; width: auto; font-weight:800; }
+        .btn-edit { background: var(--warning); color: white; padding: 4px 8px; font-size: 9px; border-radius: 4px; width: auto; font-weight:800; }
+
+        /* TABLE & ROSTER */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; font-size: 10px; color: #888; padding-bottom: 10px; text-transform: uppercase; }
+        td { padding: 12px 5px; border-top: 1px solid var(--border); font-size: 13px; }
+        .client-link { color: var(--primary); font-weight: 800; cursor: pointer; text-decoration: none; }
+        .history-pane { background: #fafafa; padding: 10px; border-radius: 8px; border: 1px solid #eee; margin-top: 5px; font-size: 11px; }
+        .history-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; }
+
+        /* OVERLAY & PHOTOS */
+        #clientOverlay { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 5000; padding: 20px; overflow-y: auto; }
+        .scout-card { background: #fff; border: 1px solid var(--border); padding: 15px; border-radius: 12px; border-left: 5px solid var(--primary); margin: 15px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .plan-box { background: #f4f7f1; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; color: #2d3436; margin-top: 10px; border: 1px solid #e0e0d1; }
+        .photo-grid { display: flex; gap: 10px; margin-top: 10px; }
+        .photo-box { flex: 1; border: 1px dashed var(--border); border-radius: 8px; text-align: center; padding: 10px; background: #fafafa; }
+        .photo-box img { max-width: 100%; border-radius: 4px; margin-top: 8px; }
+
+        /* WORKOUT SPLIT UI */
+        .ex-tag { background: #eee; color: #555; padding: 8px 12px; border-radius: 20px; font-size: 11px; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
+        .ex-tag.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .workout-title { font-size: 12px; font-weight: 800; color: #333; cursor: pointer; margin-top: 12px; padding: 8px; background: #f4f7f1; border-radius: 6px; display: flex; justify-content: space-between; }
+        
+        .set-row { display: flex; gap: 8px; margin-bottom: 6px; align-items: center; }
+        .set-label { font-size: 10px; font-weight: 800; color: #888; width: 35px; text-transform: uppercase; }
+        .set-input { padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; margin-bottom: 0; background: #fff; outline: none; flex: 1; }
+
+        /* REVENUE BREAKDOWN */
+        .rev-month { font-weight: 800; font-size: 14px; margin-top: 15px; display: flex; justify-content: space-between; align-items:center; border-bottom: 2px solid var(--border); padding-bottom: 5px; }
+        .rev-split { display: flex; gap: 15px; font-size: 10px; margin-top: 5px; color: #555; flex-wrap: wrap; }
+        .daily-rev { display: none; background: #fafafa; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: 11px; border: 1px solid #eee; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Ryal FitHub</h1>
+    <div style="margin-top: 10px; display: flex; justify-content: center; gap: 10px;">
+        <button class="btn-info" onclick="exportData()" style="width: auto; padding: 6px 12px; font-size: 11px;">☁️ Backup Data</button>
+        <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+        <button class="btn-warning" onclick="document.getElementById('importFile').click()" style="width: auto; padding: 6px 12px; font-size: 11px; background: var(--warning); color: white; border: none; border-radius: 8px; font-weight: 700;">📂 Load Backup</button>
+    </div>
+</header>
+
+<div class="stats-grid">
+    <div class="stat-card"><span class="stat-label">SESSIONS</span><span id="statSessions" class="stat-val">0</span></div>
+    <div class="stat-card"><span class="stat-label">SHIFT</span><span id="statShift" class="stat-val">-</span></div>
+    <div class="stat-card"><span class="stat-label">TOTAL EARNINGS</span><span id="statRevenue" class="stat-val">₹0</span></div>
+</div>
+
+<div class="section active" id="sec-att">
+    <h2 onclick="toggleSec('sec-att')">MY ATTENDANCE <span>▲</span></h2>
+    <div class="collapsible">
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1"><label>Date</label><input type="date" id="attDate" onchange="render()"></div>
+            <div style="flex:1"><label>In Time</label><input type="time" id="attIn" value="06:00"></div>
+            <div style="flex:1"><label>Out Time</label><input type="time" id="attOut" value="12:00"></div>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:5px;">
+            <button class="btn-main" onclick="logAtt('Present')">Present</button>
+            <button class="btn-info" onclick="logAtt('Week Off')">Week Off</button>
+            <button class="btn-danger" onclick="logAtt('Absent')">Absent</button>
+        </div>
+        <div id="attList" class="history-pane" style="margin-top:15px; max-height:150px; overflow-y:auto;"></div>
+    </div>
+</div>
+
+<div class="section" id="sec-rev">
+    <h2 onclick="toggleSec('sec-rev')">REVENUE BREAKDOWN <span>▲</span></h2>
+    <div class="collapsible" id="revView">No logs yet.</div>
+</div>
+
+<div class="section" id="sec-prof">
+    <h2 onclick="toggleSec('sec-prof')">CLIENT PROFILE SETUP <span>▲</span></h2>
+    <div class="collapsible">
+        <input type="text" id="regName" placeholder="Full Name">
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1"><label>Receipt No.</label><input type="text" id="regReceipt" placeholder="e.g. REC-102"></div>
+            <div style="flex:1"><label>Profession</label><input type="text" id="regProf" placeholder="e.g. IT"></div>
+        </div>
+        
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1">
+                <label>Fitness Level</label>
+                <select id="regLevel">
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                </select>
+            </div>
+            <div style="flex:1"><label>Injuries/Medical</label><input type="text" id="regMed" placeholder="e.g. Knee pain, None"></div>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1"><label>Start Date</label><input type="date" id="regStart"></div>
+            <div style="flex:1"><label>End Date</label><input type="date" id="regEnd"></div>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1"><label>Package ₹</label><input type="number" id="regPay"></div>
+            <div style="flex:1"><label>Total Sessions</label><input type="number" id="regSess"></div>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1">
+                <label>GST %</label>
+                <select id="regGst"><option value="0">0%</option><option value="0.05">5%</option><option value="0.18">18%</option></select>
+            </div>
+            <div style="flex:1">
+                <label>Retention %</label>
+                <select id="regRet"><option value="0.40" selected>40%</option><option value="0.45">45%</option><option value="0.50">50%</option><option value="1">100%</option></select>
+            </div>
+        </div>
+        <button class="btn-main" onclick="regClient()">Create Official Profile</button>
+    </div>
+</div>
+
+<div class="section active" id="sec-rost">
+    <h2 onclick="toggleSec('sec-rost')">ACTIVE ROSTER <span>▲</span></h2>
+    <div class="collapsible">
+        <table id="rosterTable">
+            <thead><tr><th>Client Name</th><th>Progress</th><th>Action</th></tr></thead>
+            <tbody id="rosterView"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="clientOverlay">
+    <button class="btn-sub" onclick="document.getElementById('clientOverlay').style.display='none'" style="margin-bottom:10px;">← Back to Dashboard</button>
+    <button class="btn-wa" onclick="sendWaReport()">📱 Send WhatsApp Progress Report</button>
+    
+    <div style="display:flex; justify-content:space-between; align-items:center; margin: 5px 0;">
+        <h1 id="ovName" style="margin:0; font-size:22px; font-weight:800;">Name</h1>
+        <div style="position:relative;">
+            <button onclick="document.getElementById('clientMenu').style.display = document.getElementById('clientMenu').style.display === 'block' ? 'none' : 'block'" style="background:none; border:none; font-size:24px; font-weight:800; cursor:pointer; color:var(--text); padding:0 5px; line-height:1;">⋮</button>
+            <div id="clientMenu" style="display:none; position:absolute; right:0; top:35px; background:#fff; border:1px solid var(--border); border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:8px; z-index:100; min-width:140px;">
+                <button class="btn-sub" style="width:100%; border:none; background:transparent; text-align:left; padding:8px; font-size:12px; margin-bottom:5px; font-weight:800; color:#333; cursor:pointer;" onclick="showEditForm()">✏️ Edit Profile</button>
+                <button class="btn-danger" style="width:100%; padding:8px; font-size:12px; font-weight:800; cursor:pointer;" onclick="deleteCurrentClient()">🗑️ Delete Client</button>
+            </div>
+        </div>
+    </div>
+
+    <p id="ovTags" style="font-size:11px; color:#888; font-weight:600; text-transform:uppercase; margin-bottom:5px; margin-top:0;"></p>
+    <p id="ovReceipt" style="font-size:10px; color:#555; margin-bottom:10px; font-weight:600;"></p>
+    <div id="ovMed" style="display:none; background:#ffebee; color:#c0392b; padding:8px; border-radius:6px; font-size:11px; font-weight:800; border:1px solid #ffcdd2; margin-bottom:15px;"></div>
+
+    <div class="section" id="ovEditForm" style="display:none; border-left: 3px solid var(--warning);">
+        <h2 style="font-size:10px; color:var(--warning); margin-bottom:10px;">Edit Client Details</h2>
+        <input type="text" id="editName" placeholder="Full Name">
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1"><label>Receipt No.</label><input type="text" id="editReceipt"></div>
+            <div style="flex:1"><label>Total Sessions</label><input type="number" id="editSess"></div>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <div style="flex:1"><label>End Date</label><input type="date" id="editEnd"></div>
+            <div style="flex:1"><label>Injuries/Medical</label><input type="text" id="editMed"></div>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button class="btn-main" style="background:var(--warning);" onclick="saveClientEdit()">Save Changes</button>
+            <button class="btn-sub" style="flex:0.5;" onclick="document.getElementById('ovEditForm').style.display='none'">Cancel</button>
+        </div>
+    </div>
+
+    <div class="section active">
+        <h2 style="font-size:10px;">InBody & Smart Programming</h2>
+        <div style="display:flex; gap:8px; margin-top:10px;">
+            <div style="flex:1"><label>Weight (kg)</label><input type="number" id="inWeight"></div>
+            <div style="flex:1"><label>SMM (kg)</label><input type="number" id="inSmm" placeholder="Muscle"></div>
+            <div style="flex:1"><label>PBF (%)</label><input type="number" id="inPbf" placeholder="Fat %"></div>
+        </div>
+        <button class="btn-main" onclick="generateSmartPlan()" style="margin-top:10px; background:#1d1d1f;">🤖 Generate Smart Blueprint</button>
+    </div>
+
+    <div class="scout-card" id="scoutEngine" style="display:none;">
+        <h4 style="margin:0 0 10px 0; font-size:11px; color:var(--primary); letter-spacing:1px; text-transform:uppercase;">🔬 Clinical Algorithm Results</h4>
+        <div id="ovScout"></div>
+    </div>
+
+    <div class="section active">
+        <h2 style="font-size:10px;">Progress Photos</h2>
+        <div class="photo-grid">
+            <div class="photo-box">
+                <label>Before</label>
+                <input type="file" id="fileBefore" accept="image/*" style="font-size:9px; padding:5px; border:none; background:transparent;" onchange="handlePhotoUpload('before')">
+                <img id="imgBefore" style="display:none;">
+            </div>
+            <div class="photo-box">
+                <label>After</label>
+                <input type="file" id="fileAfter" accept="image/*" style="font-size:9px; padding:5px; border:none; background:transparent;" onchange="handlePhotoUpload('after')">
+                <img id="imgAfter" style="display:none;">
+            </div>
+        </div>
+    </div>
+
+    <div class="section active">
+        <h2 style="font-size:10px;">Record Workout</h2>
+        <div style="margin-top:10px;">
+            <input type="date" id="logDate">
+            <input type="text" id="logWorkoutName" placeholder="Name this Workout (e.g., Push Day, 10k Run)">
+
+            <select id="splitSelect" onchange="loadSplit(this.value)">
+                <option value="">-- Or Select a Split Template --</option>
+                <option value="Pull (Back & Biceps)">Pull (Back & Biceps)</option>
+                <option value="Push (Chest, Shoulders, Triceps)">Push (Chest, Shoulders, Triceps)</option>
+                <option value="Legs (Quads, Hams, Glutes)">Legs (Quads, Hams, Glutes)</option>
+                <option value="Core & Functional">Core & Functional</option>
+                <option value="Cardio">Cardio & Endurance</option>
+            </select>
+            
+            <div id="exTagsContainer" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px;"></div>
+            
+            <input type="text" id="exSearch" placeholder="Search specific exercise..." oninput="searchEx(this.value)">
+            <div id="searchRes" style="background:#fff; border:1px solid #eee; display:none; max-height:120px; overflow-y:auto; border-radius:8px; margin-bottom:10px;"></div>
+
+            <div id="setForm" style="display:none; padding:12px; background:#fafafa; border-radius:8px; border:1px solid #eee;">
+                <b id="curEx" style="font-size:12px; color:var(--primary); display:block; border-bottom:1px solid var(--border); padding-bottom:5px; margin-bottom:10px;">Selected</b>
+                
+                <div style="display:flex; gap:10px; margin-bottom:15px;">
+                    <div style="flex:1;">
+                        <label>Tracking Mode</label>
+                        <select id="trackMode" onchange="generateSetInputs()">
+                            <option value="strength">Strength (Sets/Reps)</option>
+                            <option value="cardio">Cardio (Distance/Time)</option>
+                        </select>
+                    </div>
+                    <div style="flex:1;" id="setsCountDiv">
+                        <label>Sets</label>
+                        <input type="number" id="numSets" value="3" min="1" max="10" oninput="generateSetInputs()">
+                    </div>
+                </div>
+
+                <div id="setInputsContainer"></div>
+
+                <button class="btn-main" onclick="saveExercise()" style="margin-top:10px;">Save Exercise</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* --- CLOUD BACKUP --- */
+    function exportData() {
+        const dataStr = JSON.stringify({ clients: JSON.parse(localStorage.getItem('ryal_pro_v9')) || [], shifts: JSON.parse(localStorage.getItem('ryal_shifts_v9')) || [] });
+        const url = URL.createObjectURL(new Blob([dataStr], { type: "application/json" }));
+        const a = document.createElement('a'); a.href = url; a.download = `RyalFit_Backup_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    }
+    function importData(event) {
+        const file = event.target.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if(data.clients && data.shifts && confirm("Overwrite current data?")) {
+                    localStorage.setItem('ryal_pro_v9', JSON.stringify(data.clients));
+                    localStorage.setItem('ryal_shifts_v9', JSON.stringify(data.shifts));
+                    alert("Backup loaded!"); location.reload(); 
+                }
+            } catch(err) { alert("Invalid backup file."); }
+            event.target.value = ""; 
+        }; reader.readAsText(file);
+    }
+
+    let clients = JSON.parse(localStorage.getItem('ryal_pro_v9')) || [];
+    let shifts = JSON.parse(localStorage.getItem('ryal_shifts_v9')) || [];
+    const today = new Date().toISOString().split('T')[0];
+    let curID = null; let curExName = "";
+
+    const workoutDB = {
+        "Pull (Back & Biceps)": ["Pull-ups", "Lat Pulldown", "Seated Cable Row", "Barbell Row", "Dumbbell Row", "Barbell Bicep Curl"],
+        "Push (Chest, Shoulders, Triceps)": ["Bench Press", "Incline DB Press", "Cable Crossover", "Overhead Press", "Lateral Raises", "Triceps Pushdown"],
+        "Legs (Quads, Hams, Glutes)": ["Barbell Squats", "Leg Press", "Leg Extensions", "Romanian Deadlift", "Hamstring Curls"],
+        "Core & Functional": ["Plank", "Russian Twists", "Leg Raises", "Ab Wheel Rollout", "Kettlebell Swings"],
+        "Cardio": ["Treadmill Run", "Outdoor Run", "Cycling", "Rowing Machine", "Stairmaster", "Elliptical"]
+    };
+
+    document.getElementById('attDate').value = today; document.getElementById('logDate').value = today;
+    function toggleSec(id) { document.getElementById(id).classList.toggle('active'); }
+
+    /* --- ATTENDANCE --- */
+    function logAtt(status) {
+        const d = document.getElementById('attDate').value; const inT = document.getElementById('attIn').value; const outT = document.getElementById('attOut').value;
+        const [inH, inM] = inT.split(':').map(Number); const [outH, outM] = outT.split(':').map(Number);
+        const totalMins = (outH * 60 + outM) - (inH * 60 + inM);
+        let isLate = false; let isHalfDay = false;
+        if (status === 'Present' && totalMins > 0) {
+            if (totalMins <= 240) { isHalfDay = true; alert(`Logged a HALF DAY shift.`); } 
+            else if (totalMins < 350) { isLate = true; alert(`Logged as LATE (< 5h 50m).`); }
+        }
+        const baseWage = 10000 / new Date(parseInt(d.split('-')[0]), parseInt(d.split('-')[1]), 0).getDate();
+        shifts.push({ id: Date.now(), date: d, inTime: inT, outTime: outT, status, isLate, isHalfDay, pay: (status === 'Present' || status === 'Week Off') ? baseWage : 0 });
+        localStorage.setItem('ryal_shifts_v9', JSON.stringify(shifts)); render();
+    }
+    function delShift(id) { shifts = shifts.filter(s => s.id !== id); localStorage.setItem('ryal_shifts_v9', JSON.stringify(shifts)); render(); }
+
+    /* --- CLIENT REGISTRATION --- */
+    function regClient() {
+        const name = document.getElementById('regName').value; if(!name) return;
+        clients.push({
+            id: Date.now(), name,
+            receipt: document.getElementById('regReceipt').value || "",
+            level: document.getElementById('regLevel').value || "Beginner",
+            med: document.getElementById('regMed').value || "",
+            startDate: document.getElementById('regStart').value || "",
+            endDate: document.getElementById('regEnd').value || "",
+            prof: document.getElementById('regProf').value, act: "",
+            pay: parseFloat(document.getElementById('regPay').value) || 0,
+            sess: parseInt(document.getElementById('regSess').value) || 1,
+            gst: parseFloat(document.getElementById('regGst').value) || 0,
+            ret: parseFloat(document.getElementById('regRet').value) || 0.4,
+            logs: {}, bca: [], photos: {}
+        });
+        localStorage.setItem('ryal_pro_v9', JSON.stringify(clients)); alert("Client Registered!"); render();
+    }
+
+    function toggleHistory(id) {
+        const row = document.getElementById(`hist-${id}`); row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+    }
+    function toggleGroup(id, el) {
+        const div = document.getElementById(id);
+        if(div.style.display === 'none') { div.style.display = 'block'; el.innerHTML = el.innerHTML.replace('▶', '▼'); } 
+        else { div.style.display = 'none'; el.innerHTML = el.innerHTML.replace('▼', '▶'); }
+    }
+    function delLog(cId, date, logId) {
+        if(!confirm("Delete this entire exercise?")) return;
+        const c = clients.find(x => x.id === cId); c.logs[date] = c.logs[date].filter(l => l.id !== logId);
+        if (c.logs[date].length === 0) delete c.logs[date];
+        localStorage.setItem('ryal_pro_v9', JSON.stringify(clients)); render();
+    }
+
+    /* --- OVERLAY, EDIT & DELETE CLIENT --- */
+    function openOv(id) {
+        curID = id; const c = clients.find(x => x.id === id);
+        document.getElementById('clientOverlay').style.display = 'block';
+        
+        // Hide menu & edit form on open
+        document.getElementById('clientMenu').style.display = 'none';
+        document.getElementById('ovEditForm').style.display = 'none';
+
+        document.getElementById('ovName').innerText = c.name;
+        document.getElementById('ovTags').innerText = `Lvl: ${c.level || 'Beginner'} | ${c.prof || 'General'}`;
+        document.getElementById('ovReceipt').innerText = c.receipt ? `Rec: ${c.receipt} | Valid: ${c.startDate || '?'} to ${c.endDate || '?'}` : '';
+        
+        const medBox = document.getElementById('ovMed');
+        if(c.med && c.med.toLowerCase() !== "none" && c.med !== "") {
+            medBox.innerHTML = `⚠️ MEDICAL ALERT: ${c.med}`; medBox.style.display = 'block';
+        } else {
+            medBox.style.display = 'none';
+        }
+
+        document.getElementById('inWeight').value = ""; document.getElementById('inSmm').value = ""; document.getElementById('inPbf').value = "";
+        document.getElementById('scoutEngine').style.display = "none";
+        document.getElementById('logWorkoutName').value = ""; document.getElementById('splitSelect').value = "";
+        document.getElementById('exTagsContainer').innerHTML = ""; document.getElementById('setForm').style.display = 'none';
+
+        if(c.bca.length > 0) { document.getElementById('inWeight').value = c.bca[0].w; document.getElementById('inSmm').value = c.bca[0].smm; document.getElementById('inPbf').value = c.bca[0].pbf; }
+        const imgB = document.getElementById('imgBefore'); const imgA = document.getElementById('imgAfter');
+        if(c.photos && c.photos.before) { imgB.src = c.photos.before; imgB.style.display='block'; } else { imgB.style.display='none'; }
+        if(c.photos && c.photos.after) { imgA.src = c.photos.after; imgA.style.display='block'; } else { imgA.style.display='none'; }
+    }
+
+    function showEditForm() {
+        document.getElementById('clientMenu').style.display = 'none';
+        const c = clients.find(x => x.id === curID);
+        document.getElementById('editName').value = c.name || "";
+        document.getElementById('editReceipt').value = c.receipt || "";
+        document.getElementById('editSess').value = c.sess || "";
+        document.getElementById('editEnd').value = c.endDate || "";
+        document.getElementById('editMed').value = c.med || "";
+        document.getElementById('ovEditForm').style.display = 'block';
+    }
+
+    function saveClientEdit() {
+        const c = clients.find(x => x.id === curID);
+        c.name = document.getElementById('editName').value || c.name;
+        c.receipt = document.getElementById('editReceipt').value || "";
+        c.sess = parseInt(document.getElementById('editSess').value) || c.sess;
+        c.endDate = document.getElementById('editEnd').value || "";
+        c.med = document.getElementById('editMed').value || "";
+        
+        localStorage.setItem('ryal_pro_v9', JSON.stringify(clients));
+        document.getElementById('ovEditForm').style.display = 'none';
+        openOv(curID); 
+        render(); 
+    }
+
+    function deleteCurrentClient() {
+        document.getElementById('clientMenu').style.display = 'none';
+        if(confirm("DANGER: Are you sure you want to permanently delete this client and all their workout history? This cannot be undone.")) {
+            clients = clients.filter(c => c.id !== curID);
+            localStorage.setItem('ryal_pro_v9', JSON.stringify(clients));
+            document.getElementById('clientOverlay').style.display = 'none';
+            render();
+        }
+    }
+
+    function sendWaReport() {
+        const c = clients.find(x => x.id === curID);
+        let done = Object.keys(c.logs).length;
+        let left = c.sess - done;
+        
+        let msg = `*Kenzo Fitness | Progress Report*\nClient: ${c.name}\n\n*Session Overview:*\n✅ Completed: ${done}\n⏳ Remaining: ${left}\n`;
+        if(c.endDate) msg += `📅 Expires: ${c.endDate}\n`;
+
+        if(c.bca.length > 1) {
+            let latest = c.bca[0]; let oldest = c.bca[c.bca.length-1];
+            let smmDiff = (latest.smm - oldest.smm).toFixed(1);
+            let pbfDiff = (latest.pbf - oldest.pbf).toFixed(1);
+            msg += `\n*Body Composition Changes:*\n💪 Muscle (SMM): ${smmDiff > 0 ? '+'+smmDiff : smmDiff} kg\n🔥 Fat (PBF): ${pbfDiff > 0 ? '+'+pbfDiff : pbfDiff}%\n`;
+        }
+
+        msg += `\nKeep pushing hard! Let's schedule your next session. 💪\n- Abis Rizvi, Personal Trainer`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
+    }
+
+    function handlePhotoUpload(type) {
+        const file = document.getElementById(type === 'before' ? 'fileBefore' : 'fileAfter').files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas'); const scaleSize = 300 / img.width;
+                canvas.width = 300; canvas.height = img.height * scaleSize;
+                const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                const c = clients.find(x => x.id === curID); if(!c.photos) c.photos = {};
+                c.photos[type] = canvas.toDataURL('image/jpeg', 0.6); 
+                localStorage.setItem('ryal_pro_v9', JSON.stringify(clients)); openOv(curID); 
+            }; img.src = e.target.result;
+        }; reader.readAsDataURL(file);
+    }
+
+    /* --- SMART PROGRAMMING ENGINE --- */
+    function generateSmartPlan() {
+        const c = clients.find(x => x.id === curID);
+        const w = parseFloat(document.getElementById('inWeight').value) || 0; 
+        const smm = parseFloat(document.getElementById('inSmm').value) || 0; 
+        const pbf = parseFloat(document.getElementById('inPbf').value) || 0;
+        
+        if(w>0 && smm>0 && pbf>0) {
+            if(c.bca.length === 0 || c.bca[0].w !== w || c.bca[0].pbf !== pbf) {
+                c.bca.unshift({ date: today, w, smm, pbf }); localStorage.setItem('ryal_pro_v9', JSON.stringify(clients));
+            }
+        }
+
+        let med = (c.med || "").toLowerCase();
+        let level = c.level || "Beginner";
+        let prof = (c.prof || "").toLowerCase();
+        let currentPbf = c.bca.length > 0 ? c.bca[0].pbf : 0;
+
+        let goal = currentPbf > 22 ? "Fat Loss & Metabolic Conditioning" : "Hypertrophy & Strength Recomposition";
+        if(currentPbf === 0) goal = "General Fitness & Baseline Strength";
+
+        let vol = level === "Beginner" ? "2-3 Sets | 10-15 Reps (Focus on Motor Control & Form)" :
+                  level === "Intermediate" ? "3-4 Sets | 8-12 Reps (Focus on Progressive Overload)" :
+                  "4-5 Sets | 5-8 Reps (Focus on Absolute Strength & Hypertrophy)";
+
+        let warnings = [];
+        if(med.includes("knee") || med.includes("acl")) warnings.push("Limit heavy axial loading. Substitute Barbell Squats with Leg Press or Goblet Squats. Avoid plyometrics.");
+        if(med.includes("back") || med.includes("spine") || med.includes("disc")) warnings.push("Avoid heavy Deadlifts/Squats. Prioritize core stability (Planks, Bird-dogs) and chest-supported rows.");
+        if(med.includes("shoulder") || med.includes("rotator")) warnings.push("Limit heavy overhead pressing. Focus on scapular retraction (Face Pulls) and neutral grip pressing.");
+        let medText = warnings.length > 0 ? `<div style="background:#ffebee; color:#c0392b; padding:8px; border-radius:6px; margin-bottom:10px; font-size:11px;"><b>⚠️ Injury Protocol:</b><br>- ${warnings.join('<br>- ')}</div>` : "";
+
+        let lifeText = "";
+        if(prof.includes("it") || prof.includes("desk") || prof.includes("soft") || prof.includes("office")) {
+            lifeText = `<div style="margin-top:8px; font-size:11px; color:#555;"><b>Desk-Worker Fix:</b> Shortened hip flexors & rounded shoulders detected. Add dynamic chest stretches and prioritize Posterior Chain (Hamstrings/Rhomboids).</div>`;
+        }
+
+        let scout = `
+            <div class="plan-box">
+                <div style="font-weight:800; color:var(--text); margin-bottom:8px; font-size:13px;">${c.name}'s Custom Blueprint</div>
+                ${medText}
+                <div style="font-size:11px; margin-bottom:4px;"><b>Primary Focus:</b> ${goal}</div>
+                <div style="font-size:11px; margin-bottom:4px;"><b>Suggested Volume:</b> ${vol}</div>
+                <div style="font-size:11px; margin-bottom:4px;"><b>Recommended Split:</b> ${level === "Beginner" ? "Full Body 3x/Week" : "Upper/Lower or Push/Pull/Legs"}</div>
+                ${lifeText}
+            </div>
+        `;
+
+        document.getElementById('ovScout').innerHTML = scout;
+        document.getElementById('scoutEngine').style.display = "block";
+    }
+
+    /* --- RECORD WORKOUT & CARDIO MODULE --- */
+    function loadSplit(splitName) {
+        const container = document.getElementById('exTagsContainer'); document.getElementById('setForm').style.display = 'none';
+        if(!splitName) { container.innerHTML = ""; return; }
+        const wNameInput = document.getElementById('logWorkoutName'); if(wNameInput.value === "") wNameInput.value = splitName;
+        container.innerHTML = workoutDB[splitName].map(ex => `<div class="ex-tag" onclick="selSplitEx('${ex}', this, '${splitName}')">${ex}</div>`).join("");
+    }
+
+    function selSplitEx(name, element, splitName) {
+        document.querySelectorAll('.ex-tag').forEach(el => el.classList.remove('active')); element.classList.add('active');
+        curExName = name; document.getElementById('curEx').innerText = name;
+        document.getElementById('trackMode').value = splitName === 'Cardio' ? 'cardio' : 'strength';
+        generateSetInputs(); document.getElementById('setForm').style.display='block'; 
+    }
+
+    async function searchEx(q) {
+        if(q.length < 3) return; const res = await fetch(`https://wger.de/api/v2/exercise/search/?term=${q}`); const data = await res.json();
+        const box = document.getElementById('searchRes');
+        box.innerHTML = data.suggestions.map(s => `<div style="padding:10px; border-bottom:1px solid #eee; cursor:pointer;" onclick="selEx('${s.value}')">${s.value}</div>`).join("");
+        box.style.display = 'block';
+    }
+
+    function selEx(n) { 
+        curExName = n; document.getElementById('curEx').innerText = n;
+        document.getElementById('trackMode').value = 'strength';
+        generateSetInputs(); document.getElementById('setForm').style.display='block'; document.getElementById('searchRes').style.display='none';
+    }
+
+    function generateSetInputs() {
+        let mode = document.getElementById('trackMode').value;
+        let count = parseInt(document.getElementById('numSets').value) || 1;
+        let html = '';
+        
+        if (mode === 'strength') {
+            document.getElementById('setsCountDiv').style.display = 'block';
+            for(let i=1; i<=count; i++) {
+                html += `<div class="set-row"><span class="set-label">Set ${i}</span><input type="number" id="inW_${i}" class="set-input" placeholder="Weight (kg)"><input type="number" id="inR_${i}" class="set-input" placeholder="Reps"></div>`;
+            }
+        } else {
+            document.getElementById('setsCountDiv').style.display = 'none';
+            html += `<div class="set-row"><span class="set-label" style="width:50px;">Target</span><input type="number" step="0.1" id="inDist" class="set-input" placeholder="Distance (km)"><input type="number" id="inTime" class="set-input" placeholder="Time (mins)"></div>`;
+        }
+        document.getElementById('setInputsContainer').innerHTML = html;
+    }
+
+    function saveExercise() {
+        const d = document.getElementById('logDate').value; const wName = document.getElementById('logWorkoutName').value || "General Workout";
+        const mode = document.getElementById('trackMode').value;
+        let setsData = [];
+
+        if (mode === 'strength') {
+            const count = parseInt(document.getElementById('numSets').value) || 1;
+            for(let i=1; i<=count; i++) {
+                let w = document.getElementById(`inW_${i}`).value; let r = document.getElementById(`inR_${i}`).value;
+                if (w || r) setsData.push({ set: i, w: w, r: r });
+            }
+        } else {
+            let dist = document.getElementById('inDist').value; let time = document.getElementById('inTime').value;
+            if(dist || time) setsData.push({ set: 1, dist: dist, time: time, isCardio: true });
+        }
+        
+        if(setsData.length === 0) return alert("Please enter details.");
+        const c = clients.find(x => x.id === curID); if(!c.logs[d]) c.logs[d] = [];
+        c.logs[d].push({ id: Date.now(), workoutName: wName, name: curExName, mode: mode, sets: setsData });
+        localStorage.setItem('ryal_pro_v9', JSON.stringify(clients)); alert("Saved!"); 
+        document.getElementById('setForm').style.display='none'; document.querySelectorAll('.ex-tag').forEach(el => el.classList.remove('active')); render();
+    }
+
+    /* --- INVOICE GENERATOR --- */
+    function printInvoice(mStr, sal, pt, pen, net) {
+        let printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html><head><title>Invoice - ${mStr}</title>
+            <style>
+                body { font-family: 'Arial', sans-serif; padding: 40px; color: #333; }
+                .header { border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 30px; }
+                h1 { margin: 0; font-size: 28px; }
+                p { margin: 5px 0; }
+                .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+                .total { font-weight: bold; font-size: 18px; border-top: 2px solid #333; margin-top: 10px; padding-top: 10px; }
+            </style></head><body>
+            <div class="header">
+                <h1>KENZO FITNESS</h1>
+                <p>Trainer Reconciliation Report</p>
+            </div>
+            <p><b>Trainer Name:</b> Abis Rizvi</p>
+            <p><b>Billing Period:</b> ${mStr}</p>
+            <br><br>
+            <div class="row"><span>Base Salary Earnings</span><span>₹${sal.toFixed(2)}</span></div>
+            <div class="row"><span>Personal Training (PT) Split</span><span>₹${pt.toFixed(2)}</span></div>
+            <div class="row" style="color:red;"><span>Attendance Penalties (Late/Half-Day)</span><span>- ₹${pen.toFixed(2)}</span></div>
+            <div class="row total"><span>NET PAY OBLIGATION</span><span>₹${net.toFixed(2)}</span></div>
+            <br><br>
+            <p style="font-size:12px; color:#888; text-align:center; margin-top:50px;">System Generated via Ryal FitHub</p>
+            </body></html>
+        `);
+        printWindow.document.close();
+        setTimeout(() => { printWindow.print(); }, 500);
+    }
+
+    function toggleDailyRev(m) { const el = document.getElementById(`daily-rev-${m}`); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
+
+    /* --- RENDER LOGIC --- */
+    function render() {
+        let activeMonth = (document.getElementById('attDate').value || today).slice(0, 7); 
+        let monthShifts = shifts.filter(s => s.date.startsWith(activeMonth));
+        let pCount = monthShifts.filter(s => s.status === 'Present').length; let lCount = monthShifts.filter(s => s.isLate).length; let hCount = monthShifts.filter(s => s.isHalfDay).length;
+        document.getElementById('attList').innerHTML = `<div style="display:flex; justify-content:space-between; font-size:10px; font-weight:800; color:var(--primary); margin-bottom:8px; padding-bottom:5px; border-bottom:1px solid #eee;"><span>${activeMonth} STATS</span><span>${pCount} PRESENT | ${lCount} LATE | ${hCount} HALF</span></div>` + monthShifts.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(s => `<div class="history-row"><span>${s.date} | <b>${s.status}</b> ${s.isLate ? '<span style="color:var(--danger)">(LATE)</span>' : ''}${s.isHalfDay ? '<span style="color:var(--warning)">(HALF)</span>' : ''}</span><button class="btn-del" onclick="delShift(${s.id})">Del</button></div>`).join("");
+
+        let rosterHtml = "";
+        clients.forEach(c => {
+            let totalSessionsDone = Object.keys(c.logs).length; 
+            
+            // EXPIRY ALERT LOGIC
+            let isExpiring = false; let isExpired = false;
+            let daysLeft = 999;
+            if(c.endDate) daysLeft = Math.ceil((new Date(c.endDate) - new Date(today)) / (1000 * 60 * 60 * 24));
+            let sessLeft = c.sess - totalSessionsDone;
+            if (sessLeft <= 0 || daysLeft < 0) isExpired = true;
+            else if (sessLeft <= 2 || daysLeft <= 3) isExpiring = true;
+            
+            let rowStyle = isExpired ? 'background:#ffebee;' : (isExpiring ? 'background:#fff8e1;' : '');
+            let alertBadge = isExpired ? '<span class="btn-del" style="font-size:7px; padding:2px 4px; margin-left:5px;">EXPIRED</span>' : (isExpiring ? '<span class="btn-edit" style="font-size:7px; padding:2px 4px; margin-left:5px;">EXPIRING</span>' : '');
+
+            let histRows = "";
+            Object.keys(c.logs).sort().reverse().forEach(date => {
+                histRows += `<div style="font-weight:800; margin-top:10px; border-bottom:1px solid #e0e0d1; color:var(--primary); padding-bottom:2px;">${date}</div>`;
+                let workouts = {};
+                c.logs[date].forEach(log => {
+                    const wName = log.workoutName || "General Workout";
+                    if(!workouts[wName]) workouts[wName] = []; workouts[wName].push(log);
+                });
+                Object.keys(workouts).forEach(wName => {
+                    const safeWId = `w-${c.id}-${date}-${wName.replace(/[^a-zA-Z0-9]/g, '')}`;
+                    histRows += `<div class="workout-title" onclick="toggleGroup('${safeWId}', this)"><span>▶ ${wName}</span></div><div id="${safeWId}" style="display:none; padding-left:10px; border-left:2px solid var(--primary); margin-top:5px; background: #fafafa;">`;
+                    workouts[wName].forEach(log => {
+                        const exSafeId = `ex-${c.id}-${date}-${log.id}`;
+                        let setsHtml = "";
+                        if (log.sets && log.sets.length > 0) {
+                            log.sets.forEach(s => {
+                                if(s.isCardio || log.mode === 'cardio') {
+                                    setsHtml += `<div style="font-size:11px; color:#555; padding:3px 0; border-bottom:1px dashed #e0e0d1;">🏃 <b>Distance:</b> ${s.dist || 0}km | <b>Time:</b> ${s.time || 0}mins</div>`;
+                                } else {
+                                    setsHtml += `<div style="font-size:11px; color:#555; padding:3px 0; border-bottom:1px dashed #e0e0d1;"><b>Set ${s.set}:</b> ${s.w || 0}kg x ${s.r || 0} reps</div>`;
+                                }
+                            });
+                        }
+                        histRows += `<div class="history-row" style="flex-direction:column; align-items:flex-start; background:#fff; margin-bottom:5px; border-radius:6px; padding:8px; border:1px solid #eee;"><div style="display:flex; justify-content:space-between; width:100%; align-items:center;"><span style="font-weight:700; font-size:11px; cursor:pointer; color:#333;" onclick="toggleGroup('${exSafeId}', this)">▶ ${log.name}</span><button class="btn-del" onclick="delLog(${c.id}, '${date}', ${log.id})">✕</button></div><div id="${exSafeId}" style="display:none; padding-left:10px; margin-top:8px; border-left:2px solid var(--primary); width:100%; box-sizing:border-box;">${setsHtml}</div></div>`;
+                    });
+                    histRows += `</div>`;
+                });
+            });
+
+            rosterHtml += `<tr style="${rowStyle}"><td><span class="client-link" onclick="openOv(${c.id})">${c.name}</span>${alertBadge}</td><td><b>${totalSessionsDone}</b> / ${c.sess}</td><td style="text-align:right;"><button class="btn-sub" onclick="toggleHistory(${c.id})">History</button></td></tr><tr id="hist-${c.id}" style="display:none;"><td colspan="3"><div class="history-pane">${histRows || 'No logs yet.'}</div></td></tr>`;
+        });
+        document.getElementById('rosterView').innerHTML = rosterHtml;
+
+        // Revenue Math
+        let monthly = {};
+        shifts.forEach(s => {
+            const m = s.date.slice(0, 7); if(!monthly[m]) monthly[m] = { sal: 0, pt: 0, lateCount: 0, halfDayCount: 0, days: {} };
+            monthly[m].sal += (s.pay || 0); if(s.isLate) monthly[m].lateCount += 1; if(s.isHalfDay) monthly[m].halfDayCount += 1;
+            if(!monthly[m].days[s.date]) monthly[m].days[s.date] = { sal: 0, pt: 0 }; monthly[m].days[s.date].sal += (s.pay || 0);
+        });
+        clients.forEach(c => {
+            const perSess = ((c.pay || 0) / (1 + (c.gst || 0)) * (c.ret || 0)) / (c.sess || 1);
+            Object.keys(c.logs).forEach(date => {
+                if(c.logs[date].length === 0) return; const m = date.slice(0, 7); if(!monthly[m]) monthly[m] = { sal: 0, pt: 0, lateCount: 0, halfDayCount: 0, days: {} };
+                monthly[m].pt += perSess; if(!monthly[m].days[date]) monthly[m].days[date] = { sal: 0, pt: 0 }; monthly[m].days[date].pt += perSess;
+            });
+        });
+
+        let revHtml = ""; let todayMonth = today.slice(0,7); let currRev = 0;
+        Object.keys(monthly).sort().reverse().forEach(m => {
+            const data = monthly[m];
+            const baseWage = 10000 / new Date(parseInt(m.split('-')[0]), parseInt(m.split('-')[1]), 0).getDate();
+            const penalty = (Math.floor(data.lateCount / 3) * (baseWage * 0.5)) + (data.halfDayCount * (baseWage * 0.5));
+            const net = (data.sal + data.pt) - penalty;
+            if(m === todayMonth) currRev = net;
+
+            let dayHtml = ""; Object.keys(data.days).sort().reverse().forEach(d => { dayHtml += `<div class="history-row"><span>${d}</span> <span>Sal: ₹${data.days[d].sal.toFixed(0)} | PT: ₹${data.days[d].pt.toFixed(0)}</span></div>`; });
+
+            revHtml += `<div><div class="rev-month">
+                <span onclick="toggleDailyRev('${m}')" style="cursor:pointer;">${m} ▾</span> 
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="color:var(--primary);">₹${net.toFixed(0)}</span>
+                    <button class="btn-sub" style="margin:0;" onclick="printInvoice('${m}', ${data.sal}, ${data.pt}, ${penalty}, ${net})">🖨️ PDF</button>
+                </div>
+                </div><div class="rev-split"><span>SAL: <b>₹${data.sal.toFixed(0)}</b></span><span>PT: <b>₹${data.pt.toFixed(0)}</b></span>${penalty > 0 ? `<span style="color:var(--danger)">PENALTY: <b>-₹${penalty.toFixed(0)}</b></span>` : ''}</div><div class="daily-rev" id="daily-rev-${m}">${dayHtml}</div></div>`;
+        });
+        document.getElementById('revView').innerHTML = revHtml || "No revenue data.";
+        document.getElementById('statRevenue').innerText = `₹${currRev.toFixed(0)}`;
+        document.getElementById('statSessions').innerText = clients.reduce((count, c) => count + (c.logs[today] && c.logs[today].length > 0 ? 1 : 0), 0);
+        const s = shifts.find(x => x.date === today); document.getElementById('statShift').innerText = s ? s.status : "-";
+    }
+
+    render();
+</script>
+</body>
+</html>
