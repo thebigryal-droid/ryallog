@@ -77,7 +77,6 @@
     </div>
 </header>
 
-
 <div class="stats-grid">
     <div class="stat-card"><span class="stat-label">SESSIONS</span><span id="statSessions" class="stat-val">0</span></div>
     <div class="stat-card"><span class="stat-label">SHIFT</span><span id="statShift" class="stat-val">-</span></div>
@@ -88,7 +87,7 @@
     <h2 onclick="toggleSec('sec-att')">MY ATTENDANCE <span>▲</span></h2>
     <div class="collapsible">
         <div style="display:flex; gap:10px;">
-            <div style="flex:1"><label>Date</label><input type="date" id="attDate"></div>
+            <div style="flex:1"><label>Date</label><input type="date" id="attDate" onchange="render()"></div>
             <div style="flex:1"><label>In Time</label><input type="time" id="attIn" value="06:00"></div>
             <div style="flex:1"><label>Out Time</label><input type="time" id="attOut" value="12:00"></div>
         </div>
@@ -213,18 +212,15 @@
 <script>
     /* --- CLOUD BACKUP & RESTORE --- */
     function exportData() {
-        // Gather all your current local storage data
         const backupData = {
             clients: JSON.parse(localStorage.getItem('ryal_pro_v9')) || [],
             shifts: JSON.parse(localStorage.getItem('ryal_shifts_v9')) || []
         };
         
-        // Convert to a file format
         const dataStr = JSON.stringify(backupData);
         const blob = new Blob([dataStr], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         
-        // Create a temporary link and trigger the download
         const a = document.createElement('a');
         a.href = url;
         a.download = `RyalFit_Backup_${new Date().toISOString().split('T')[0]}.json`;
@@ -242,14 +238,12 @@
         reader.onload = function(e) {
             try {
                 const importedData = JSON.parse(e.target.result);
-                
-                // Verify the file has the right data structure
                 if(importedData.clients && importedData.shifts) {
                     if(confirm("This will overwrite your current data. Are you sure?")) {
                         localStorage.setItem('ryal_pro_v9', JSON.stringify(importedData.clients));
                         localStorage.setItem('ryal_shifts_v9', JSON.stringify(importedData.shifts));
                         alert("Backup loaded successfully!");
-                        location.reload(); // Refresh the page to show new data
+                        location.reload(); 
                     }
                 } else {
                     alert("Invalid backup file. Missing clients or shifts data.");
@@ -257,12 +251,10 @@
             } catch(err) {
                 alert("Error reading the file. Make sure it is a valid JSON backup.");
             }
-            // Reset the input so you can select the same file again if needed
             event.target.value = ""; 
         };
         reader.readAsText(file);
     }
-
 
     let clients = JSON.parse(localStorage.getItem('ryal_pro_v9')) || [];
     let shifts = JSON.parse(localStorage.getItem('ryal_shifts_v9')) || [];
@@ -282,7 +274,7 @@
 
     function toggleSec(id) { document.getElementById(id).classList.toggle('active'); }
 
-    /* --- 1. ATTENDANCE & HALF DAY LOGIC --- */
+    /* --- RESTORED ATTENDANCE LOGIC --- */
     function logAtt(status) {
         const d = document.getElementById('attDate').value;
         const inT = document.getElementById('attIn').value;
@@ -296,10 +288,10 @@
         let isHalfDay = false;
 
         if (status === 'Present' && totalMins > 0) {
-            if (totalMins <= 240) { // 4 Hours or less
+            if (totalMins <= 240) { 
                 isHalfDay = true;
                 alert(`Logged ${Math.floor(totalMins/60)}h ${totalMins%60}m. This is marked as a HALF DAY shift.`);
-            } else if (totalMins < 350) { // Under 5h 50m
+            } else if (totalMins < 350) { 
                 isLate = true; 
                 alert(`Logged ${Math.floor(totalMins/60)}h ${totalMins%60}m. This is marked as LATE (< 5h 50m).`);
             }
@@ -346,7 +338,6 @@
         row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
     }
 
-    // NEW: TOGGLE WORKOUT GROUP
     function toggleGroup(id, el) {
         const div = document.getElementById(id);
         if (div.style.display === 'none') {
@@ -380,7 +371,6 @@
         render();
     }
 
-    /* --- OVERLAY, BCA & PHOTOS --- */
     function openOv(id) {
         curID = id; const c = clients.find(x => x.id === id);
         document.getElementById('clientOverlay').style.display = 'block';
@@ -401,14 +391,12 @@
             analyzeInBody();
         }
 
-        // Load Photos
         const imgB = document.getElementById('imgBefore');
         const imgA = document.getElementById('imgAfter');
         if(c.photos && c.photos.before) { imgB.src = c.photos.before; imgB.style.display='block'; } else { imgB.style.display='none'; }
         if(c.photos && c.photos.after) { imgA.src = c.photos.after; imgA.style.display='block'; } else { imgA.style.display='none'; }
     }
 
-    // NEW: COMPRESS AND SAVE PHOTO
     function handlePhotoUpload(type) {
         const file = document.getElementById(type === 'before' ? 'fileBefore' : 'fileAfter').files[0];
         if(!file) return;
@@ -417,7 +405,6 @@
         reader.onload = function(e) {
             const img = new Image();
             img.onload = function() {
-                // Resize to prevent LocalStorage Quota Exceeded error
                 const canvas = document.createElement('canvas');
                 const MAX_WIDTH = 300; 
                 const scaleSize = MAX_WIDTH / img.width;
@@ -432,7 +419,7 @@
                 c.photos[type] = canvas.toDataURL('image/jpeg', 0.6); 
                 
                 localStorage.setItem('ryal_pro_v9', JSON.stringify(clients));
-                openOv(curID); // Reload overlay to show images
+                openOv(curID); 
             }
             img.src = e.target.result;
         };
@@ -467,7 +454,6 @@
         document.getElementById('setForm').style.display = 'none';
         if(!splitName) { container.innerHTML = ""; return; }
         
-        // Auto-fill workout name if empty
         const wNameInput = document.getElementById('logWorkoutName');
         if(wNameInput.value === "") wNameInput.value = splitName;
 
@@ -500,7 +486,7 @@
 
     function addSet() {
         const d = document.getElementById('logDate').value;
-        const wName = document.getElementById('logWorkoutName').value || "General Workout"; // Added Workout Name
+        const wName = document.getElementById('logWorkoutName').value || "General Workout";
         const c = clients.find(x => x.id === curID);
         if(!c.logs[d]) c.logs[d] = [];
         
@@ -522,9 +508,25 @@
         el.style.display = el.style.display === 'block' ? 'none' : 'block';
     }
 
+    /* --- FIXED RENDER LOGIC --- */
     function render() {
-        // Attendance Status Visuals
-        document.getElementById('attList').innerHTML = shifts.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(s => `
+        // 1. Attendance Status Visuals (Dynamic Monthly View)
+        let selectedDate = document.getElementById('attDate').value || today;
+        let activeMonth = selectedDate.slice(0, 7); 
+        let monthShifts = shifts.filter(s => s.date.startsWith(activeMonth));
+        
+        let pCount = monthShifts.filter(s => s.status === 'Present').length;
+        let lCount = monthShifts.filter(s => s.isLate).length;
+        let hCount = monthShifts.filter(s => s.isHalfDay).length;
+
+        let attSummaryHtml = `
+            <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:800; color:var(--primary); margin-bottom:8px; padding-bottom:5px; border-bottom:1px solid #eee;">
+                <span>${activeMonth} STATS</span>
+                <span>${pCount} PRESENT | ${lCount} LATE | ${hCount} HALF</span>
+            </div>
+        `;
+
+        document.getElementById('attList').innerHTML = attSummaryHtml + monthShifts.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(s => `
             <div class="history-row">
                 <span>${s.date} | <b>${s.status}</b> 
                 ${s.isLate ? '<span style="color:var(--danger)">(LATE)</span>' : ''}
@@ -543,7 +545,6 @@
             Object.keys(c.logs).sort().reverse().forEach(date => {
                 histRows += `<div style="font-weight:800; margin-top:10px; border-bottom:1px solid #e0e0d1; color:var(--primary); padding-bottom:2px;">${date}</div>`;
                 
-                // Group Sets by Workout Name
                 let workouts = {};
                 c.logs[date].forEach(log => {
                     const wName = log.workoutName || "General Workout";
@@ -552,7 +553,6 @@
                 });
 
                 Object.keys(workouts).forEach(wName => {
-                    // Generate a safe unique ID for the toggle container
                     const safeId = `w-${c.id}-${date}-${wName.replace(/[^a-zA-Z0-9]/g, '')}`;
                     
                     histRows += `
@@ -588,7 +588,7 @@
         });
         document.getElementById('rosterView').innerHTML = rosterHtml;
 
-        // Revenue Math (Includes Half Day Math)
+        // Revenue Math
         let monthly = {};
         
         shifts.forEach(s => {
@@ -627,7 +627,6 @@
             const monthNum = parseInt(m.split('-')[1]);
             const baseWage = 10000 / new Date(year, monthNum, 0).getDate();
             
-            // Penalty Math combining Lates (every 3) and Half Days
             const latePen = Math.floor(data.lateCount / 3) * (baseWage * 0.5);
             const halfDayPen = data.halfDayCount * (baseWage * 0.5);
             const penalty = latePen + halfDayPen;
