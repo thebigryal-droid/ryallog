@@ -18,7 +18,6 @@
             --vip: #2c3e50; 
         }
         
-        /* Dark Mode Variables */
         body.dark-mode { 
             --bg: #000000; 
             --card: #1c1c1e; 
@@ -27,537 +26,132 @@
         }
         
         body { 
-            margin: 0; 
-            background: var(--bg); 
-            color: var(--text); 
+            margin: 0; background: var(--bg); color: var(--text); 
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            padding: 20px 15px 80px; 
-            transition: background 0.3s, color 0.3s; 
+            padding: 20px 15px 80px; transition: background 0.3s, color 0.3s; 
         }
 
-        header { 
-            text-align: center; 
-            margin-bottom: 20px; 
-        }
+        header { text-align: center; margin-bottom: 20px; }
+        header h1 { font-size: 24px; font-weight: 800; color: var(--text); margin: 0; letter-spacing: -0.5px; }
 
-        header h1 { 
-            font-size: 24px; 
-            font-weight: 800; 
-            color: var(--text); 
-            margin: 0; 
-            letter-spacing: -0.5px; 
-        }
+        .icon { width: 14px; height: 14px; vertical-align: middle; margin-right: 5px; margin-top: -2px; }
+        .icon-lg { width: 18px; height: 18px; vertical-align: middle; }
 
-        .icon { 
-            width: 14px; 
-            height: 14px; 
-            vertical-align: middle; 
-            margin-right: 5px; 
-            margin-top: -2px; 
-        }
-
-        .icon-lg { 
-            width: 18px; 
-            height: 18px; 
-            vertical-align: middle; 
-        }
-
-        /* --- Smooth UI Animations & Hover States --- */
-        @keyframes fadeUp { 
-            from { opacity: 0; transform: translateY(15px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-
-        @keyframes slideUp { 
-            from { opacity: 0; transform: translateY(100%); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-
-        @keyframes popIn { 
-            0% { opacity: 0; transform: scale(0.8); } 
-            100% { opacity: 1; transform: scale(1); } 
-        }
-
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
         @keyframes floatWave {
             0%, 100% { transform: translateY(0); box-shadow: 0 0 0 rgba(0,0,0,0); }
             50% { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         }
         
-        .section { 
-            background: var(--card); 
-            border-radius: 14px; 
-            padding: 15px; 
-            margin-bottom: 15px; 
-            border: 1px solid var(--border); 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02); 
-            animation: fadeUp 0.4s ease-out forwards; 
-        }
-        
-        .stats-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 10px; 
-            margin-bottom: 20px; 
-            animation: fadeUp 0.3s ease-out forwards; 
-        }
+        /* --- NEW: CUSTOM ALERT MODAL STYLES --- */
+        #ryalModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(5px); z-index:99999; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; }
+        #ryalModalBox { background:var(--card); width:90%; max-width:320px; border-radius:16px; padding:25px; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.2); transform:scale(0.9); transition:transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid var(--border); }
+        #ryalModalIcon { margin-bottom:15px; display:flex; justify-content:center; }
+        #ryalModalTitle { margin:0 0 8px; font-size:18px; color:var(--text); font-weight:800; letter-spacing:-0.5px; }
+        #ryalModalText { margin:0 0 20px; font-size:13px; color:#86868b; line-height:1.5; font-weight:500; }
+        #ryalModalActions { display:flex; gap:10px; }
 
-        .stat-card { 
-            background: var(--card); 
-            padding: 15px 5px; 
-            border-radius: 14px; 
-            text-align: center; 
-            border: 1px solid var(--border); 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02); 
-            transition: all 0.3s ease; 
-        }
+        .section { background: var(--card); border-radius: 14px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.02); animation: fadeUp 0.4s ease-out forwards; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; animation: fadeUp 0.3s ease-out forwards; }
+        .stat-card { background: var(--card); padding: 15px 5px; border-radius: 14px; text-align: center; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: all 0.3s ease; }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.08); border-color: var(--primary); }
+        .stat-label { font-size: 9px; color: #86868b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        .stat-val { display: block; font-size: 16px; font-weight: 800; color: var(--primary); margin-top: 5px; }
 
-        .stat-card:hover { 
-            transform: translateY(-4px); 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.08); 
-            border-color: var(--primary); 
-        }
-
-        .stat-label { 
-            font-size: 9px; 
-            color: #86868b; 
-            text-transform: uppercase; 
-            font-weight: 700; 
-            letter-spacing: 0.5px; 
-        }
-
-        .stat-val { 
-            display: block; 
-            font-size: 16px; 
-            font-weight: 800; 
-            color: var(--primary); 
-            margin-top: 5px; 
-        }
-
-        h2 { 
-            font-size: 11px; 
-            text-transform: uppercase; 
-            color: var(--text); 
-            display: flex; 
-            justify-content: space-between; 
-            cursor: pointer; 
-            margin: 0; 
-            letter-spacing: 1px; 
-            align-items: center; 
-        }
-
-        h2 .chevron { 
-            width: 14px; 
-            height: 14px; 
-            color: var(--primary); 
-            transition: 0.3s; 
-        }
-
-        .collapsible { 
-            display: none; 
-            padding-top: 15px; 
-            margin-top: 12px; 
-            border-top: 1px solid var(--border); 
-        }
-
+        h2 { font-size: 11px; text-transform: uppercase; color: var(--text); display: flex; justify-content: space-between; cursor: pointer; margin: 0; letter-spacing: 1px; align-items: center; }
+        h2 .chevron { width: 14px; height: 14px; color: var(--primary); transition: 0.3s; }
+        .collapsible { display: none; padding-top: 15px; margin-top: 12px; border-top: 1px solid var(--border); }
         .active .collapsible { display: block; }
         .active h2 .chevron { transform: rotate(180deg); }
 
-        input, select, textarea { 
-            width: 100%; 
-            padding: 12px; 
-            border: 1px solid var(--border); 
-            border-radius: 10px; 
-            font-size: 13px; 
-            margin-bottom: 10px; 
-            box-sizing: border-box; 
-            background: var(--bg); 
-            color: var(--text); 
-            outline: none; 
-            font-family: inherit; 
-            transition: all 0.3s ease; 
-        }
-
-        input:focus, select:focus { 
-            border-color: var(--info); 
-            background: var(--card); 
-            box-shadow: 0 0 0 3px rgba(0,122,255,0.1); 
-            transform: translateY(-1px); 
-        }
-
-        label { 
-            font-size: 10px; 
-            font-weight: 700; 
-            color: #86868b; 
-            margin-bottom: 4px; 
-            display: block; 
-            text-transform: uppercase; 
-        }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px; margin-bottom: 10px; box-sizing: border-box; background: var(--bg); color: var(--text); outline: none; font-family: inherit; transition: all 0.3s ease; }
+        input:focus, select:focus { border-color: var(--info); background: var(--card); box-shadow: 0 0 0 3px rgba(0,122,255,0.1); transform: translateY(-1px); }
+        label { font-size: 10px; font-weight: 700; color: #86868b; margin-bottom: 4px; display: block; text-transform: uppercase; }
         
-        button { 
-            width: 100%; 
-            padding: 12px; 
-            border: none; 
-            border-radius: 10px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            font-size: 13px; 
-            font-family: inherit; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-        }
-
-        button:hover { 
-            filter: brightness(1.05); 
-            transform: translateY(-1px); 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-        }
-
-        button:active { 
-            transform: scale(0.96); 
-            box-shadow: none; 
-        }
+        button { width: 100%; padding: 12px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 13px; font-family: inherit; display: flex; align-items: center; justify-content: center; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        button:hover { filter: brightness(1.05); transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        button:active { transform: scale(0.96); box-shadow: none; }
         
         .btn-main { background: var(--primary); color: white; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-info { background: var(--info); color: white; }
         .btn-wa { background: #34C759; color: white; margin-bottom: 8px; }
         .btn-pdf { background: #1d1d1f; color: white; margin-bottom: 8px; }
-        
         body.dark-mode .btn-pdf { background: #333336; }
-        
         .btn-vip { background: var(--vip); color: white; margin-bottom: 15px; }
-        
-        .btn-sub { 
-            background: var(--bg); 
-            color: var(--text); 
-            font-size: 11px; 
-            border: 1px solid var(--border); 
-            padding: 8px 12px; 
-            width: auto; 
-            font-weight: 600; 
-        }
-
-        .btn-action { 
-            background: transparent; 
-            color: var(--info); 
-            border: 1px solid var(--info); 
-            padding: 4px 8px; 
-            font-size: 10px; 
-            border-radius: 6px; 
-            width: auto; 
-            font-weight: 600; 
-            margin-left: 5px;
-        }
-
+        .btn-sub { background: var(--bg); color: var(--text); font-size: 11px; border: 1px solid var(--border); padding: 8px 12px; width: auto; font-weight: 600; }
+        .btn-action { background: transparent; color: var(--info); border: 1px solid var(--info); padding: 4px 8px; font-size: 10px; border-radius: 6px; width: auto; font-weight: 600; margin-left: 5px;}
         .btn-action.danger { color: var(--danger); border-color: var(--danger); }
 
         table { width: 100%; border-collapse: collapse; }
-        
-        th { 
-            text-align: left; 
-            font-size: 10px; 
-            color: #86868b; 
-            padding-bottom: 10px; 
-            text-transform: uppercase; 
-            font-weight: 700; 
-            border-bottom: 1px solid var(--border); 
-        }
-
-        td { 
-            padding: 12px 5px; 
-            border-bottom: 1px solid var(--border); 
-            font-size: 13px; 
-            font-weight: 500; 
-        }
-
-        .client-link { 
-            color: var(--info); 
-            font-weight: 700; 
-            cursor: pointer; 
-            text-decoration: none; 
-            display: flex; 
-            align-items: center; 
-            transition: color 0.2s; 
-        }
-
+        th { text-align: left; font-size: 10px; color: #86868b; padding-bottom: 10px; text-transform: uppercase; font-weight: 700; border-bottom: 1px solid var(--border); }
+        td { padding: 12px 5px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 500; }
+        .client-link { color: var(--info); font-weight: 700; cursor: pointer; text-decoration: none; display: flex; align-items: center; transition: color 0.2s; }
         .client-link:hover { color: var(--primary); text-decoration: underline; }
         
-        .history-pane { 
-            background: var(--bg); 
-            padding: 10px; 
-            border-radius: 10px; 
-            border: 1px solid var(--border); 
-            margin-top: 5px; 
-            font-size: 12px; 
-        }
-
-        .history-row { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 8px 0; 
-            border-bottom: 1px solid var(--border); 
-            transition: background 0.2s; 
-        }
-
+        .history-pane { background: var(--bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-top: 5px; font-size: 12px; }
+        .history-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); transition: background 0.2s; }
         .history-row:hover { background: rgba(0,0,0,0.02); }
         body.dark-mode .history-row:hover { background: rgba(255,255,255,0.02); }
 
-        #clientOverlay { 
-            display: none; 
-            position: fixed; 
-            inset: 0; 
-            background: var(--bg); 
-            z-index: 5000; 
-            padding: 20px; 
-            overflow-y: auto; 
-            animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1); 
-        }
+        #clientOverlay { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 5000; padding: 20px; overflow-y: auto; animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
         
-        .scout-card { 
-            background: var(--card); 
-            border: 1px solid var(--border); 
-            padding: 15px; 
-            border-radius: 14px; 
-            border-left: 4px solid var(--info); 
-            margin: 15px 0; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04); 
-        }
-
-        .plan-box { 
-            background: var(--bg); 
-            padding: 15px; 
-            border-radius: 12px; 
-            font-size: 13px; 
-            line-height: 1.5; 
-            color: var(--text); 
-            margin-top: 10px; 
-            border: 1px solid var(--border); 
-        }
+        .scout-card { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 14px; border-left: 4px solid var(--info); margin: 15px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+        .plan-box { background: var(--bg); padding: 15px; border-radius: 12px; font-size: 13px; line-height: 1.5; color: var(--text); margin-top: 10px; border: 1px solid var(--border); }
         
-        .ex-tag { 
-            background: var(--card); 
-            color: var(--text); 
-            padding: 8px 14px; 
-            border-radius: 20px; 
-            font-size: 12px; 
-            cursor: pointer; 
-            border: 1px solid var(--border); 
-            transition: all 0.2s; 
-            font-weight: 500; 
-        }
-
+        .ex-tag { background: var(--card); color: var(--text); padding: 8px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; border: 1px solid var(--border); transition: all 0.2s; font-weight: 500; }
         .ex-tag:hover { transform: scale(1.05); border-color: var(--info); }
         .ex-tag.active { background: var(--info); color: white; border-color: var(--info); transform: scale(1.05); }
         
-        .workout-title { 
-            font-size: 13px; 
-            font-weight: 700; 
-            color: var(--text); 
-            cursor: pointer; 
-            margin-top: 12px; 
-            padding: 10px; 
-            background: var(--card); 
-            border: 1px solid var(--border); 
-            border-radius: 10px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
+        .workout-title { font-size: 13px; font-weight: 700; color: var(--text); cursor: pointer; margin-top: 12px; padding: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
         
         .set-row { display: flex; gap: 8px; margin-bottom: 6px; align-items: center; }
         .set-label { font-size: 10px; font-weight: 700; color: #86868b; width: 35px; text-transform: uppercase; }
-        
-        .set-input { 
-            padding: 8px; 
-            border: 1px solid var(--border); 
-            border-radius: 8px; 
-            font-size: 12px; 
-            margin-bottom: 0; 
-            background: var(--card); 
-            color: var(--text); 
-            outline: none; 
-            flex: 1; 
-        }
+        .set-input { padding: 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; margin-bottom: 0; background: var(--card); color: var(--text); outline: none; flex: 1; }
 
-        .rev-month { 
-            font-weight: 700; 
-            font-size: 15px; 
-            margin-top: 15px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-bottom: 1px solid var(--border); 
-            padding-bottom: 8px; 
-            color: var(--text); 
-            transition: all 0.2s; 
-        }
-
+        .rev-month { font-weight: 700; font-size: 15px; margin-top: 15px; display: flex; justify-content: space-between; align-items:center; border-bottom: 1px solid var(--border); padding-bottom: 8px; color: var(--text); transition: all 0.2s; }
         .rev-month:hover { opacity: 0.8; }
+        .rev-split { display: flex; gap: 15px; font-size: 11px; margin-top: 8px; color: #86868b; flex-wrap: wrap; font-weight: 500; }
         
-        .rev-split { 
-            display: flex; 
-            gap: 15px; 
-            font-size: 11px; 
-            margin-top: 8px; 
-            color: #86868b; 
-            flex-wrap: wrap; 
-            font-weight: 500; 
-        }
-        
-        .badge { 
-            font-size: 8px; 
-            padding: 3px 6px; 
-            border-radius: 6px; 
-            font-weight: 700; 
-            margin-left: 6px; 
-            letter-spacing: 0.5px; 
-            text-transform: uppercase; 
-        }
-
+        .badge { font-size: 8px; padding: 3px 6px; border-radius: 6px; font-weight: 700; margin-left: 6px; letter-spacing: 0.5px; text-transform: uppercase; }
         .badge.warning { background: #fff5e5; color: var(--warning); border: 1px solid #ffd699; }
         .badge.danger { background: #ffe5e5; color: var(--danger); border: 1px solid #ff9999; }
         .badge.info { background: #e5f0ff; color: var(--info); border: 1px solid #99c2ff; }
 
-        #restTimerUI { 
-            display: none; 
-            position: fixed; 
-            bottom: 20px; 
-            right: 20px; 
-            background: #1d1d1f; 
-            color: white; 
-            padding: 12px 20px; 
-            border-radius: 30px; 
-            font-size: 18px; 
-            font-weight: 800; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
-            z-index: 9999; 
-            align-items: center; 
-            gap: 10px; 
-            animation: fadeUp 0.3s ease-out; 
-        }
+        #restTimerUI { display: none; position: fixed; bottom: 20px; right: 20px; background: #1d1d1f; color: white; padding: 12px 20px; border-radius: 30px; font-size: 18px; font-weight: 800; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 9999; align-items: center; gap: 10px; animation: fadeUp 0.3s ease-out; }
         
-        #vipPortal { 
-            display: none; 
-            background: var(--bg); 
-            color: var(--text); 
-            min-height: 100vh; 
-            padding: 30px 20px; 
-        }
-
-        .vip-card { 
-            background: var(--card); 
-            border-radius: 16px; 
-            padding: 20px; 
-            margin-bottom: 20px; 
-            border: 1px solid var(--border); 
-            animation: fadeUp 0.5s ease-out forwards; 
-        }
+        #vipPortal { display: none; background: var(--bg); color: var(--text); min-height: 100vh; padding: 30px 20px; }
+        .vip-card { background: var(--card); border-radius: 16px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); animation: fadeUp 0.5s ease-out forwards; }
         
-        .gallery-grid { 
-            display: flex; 
-            gap: 15px; 
-            overflow-x: auto; 
-            padding-bottom: 25px; 
-            padding-top: 15px; 
-            margin-top: 10px; 
-            scroll-behavior: smooth; 
-            align-items: center; 
-        }
-
-        .gallery-item { 
-            flex: 0 0 120px; 
-            background: var(--card); 
-            border: 1px solid var(--border); 
-            border-radius: 10px; 
-            padding: 5px; 
-            position: relative; 
-            transition: border-color 0.3s, filter 0.3s; 
-        }
-
-        .gallery-item:hover { 
-            filter: brightness(1.05); 
-            border-color: var(--info); 
-            z-index: 10; 
-            animation-play-state: paused !important; 
-        }
-
-        .gallery-img { 
-            width: 100%; 
-            height: 120px; 
-            object-fit: cover; 
-            border-radius: 6px; 
-        }
-
-        .gallery-date { 
-            font-size: 9px; 
-            font-weight: 700; 
-            color: #86868b; 
-            text-align: center; 
-            margin-top: 5px; 
-            transition: color 0.3s; 
-        }
-
+        .gallery-grid { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 25px; padding-top: 15px; margin-top: 10px; scroll-behavior: smooth; align-items: center; }
+        .gallery-item { flex: 0 0 120px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 5px; position: relative; transition: border-color 0.3s, filter 0.3s; }
+        .gallery-item:hover { filter: brightness(1.05); border-color: var(--info); z-index: 10; animation-play-state: paused !important; }
+        .gallery-img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; }
+        .gallery-date { font-size: 9px; font-weight: 700; color: #86868b; text-align: center; margin-top: 5px; transition: color 0.3s; }
         .gallery-item:hover .gallery-date { color: var(--info); }
-
-        .gallery-del { 
-            position: absolute; 
-            top: -8px; 
-            right: -8px; 
-            background: rgba(255,59,48,0.9); 
-            color: white; 
-            border: none; 
-            border-radius: 50%; 
-            width: 24px; 
-            height: 24px; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            transition: transform 0.2s, background 0.2s; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
-        }
-
+        .gallery-del { position: absolute; top: -8px; right: -8px; background: rgba(255,59,48,0.9); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s, background 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .gallery-del:hover { transform: scale(1.15); background: #ff3b30; }
 
-        .app-footer { 
-            text-align: center; 
-            padding: 40px 10px 20px; 
-            margin-top: 20px; 
-            border-top: 1px solid var(--border); 
-            color: #86868b; 
-            animation: fadeUp 0.5s ease-out forwards; 
-        }
-
-        .app-footer .branding { 
-            font-size: 13px; 
-            font-weight: 800; 
-            color: var(--text); 
-            margin-bottom: 6px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 6px; 
-            letter-spacing: -0.3px; 
-        }
-
+        .app-footer { text-align: center; padding: 40px 10px 20px; margin-top: 20px; border-top: 1px solid var(--border); color: #86868b; animation: fadeUp 0.5s ease-out forwards; }
+        .app-footer .branding { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 6px; letter-spacing: -0.3px; }
         .app-footer .details { font-size: 11px; font-weight: 500; }
-        
-        .app-footer .version { 
-            font-size: 9px; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            font-weight: 700; 
-            margin-top: 12px; 
-            opacity: 0.6; 
-        }
+        .app-footer .version { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-top: 12px; opacity: 0.6; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
 </head>
 <body id="mainBody">
+
+<div id="ryalModal">
+    <div id="ryalModalBox">
+        <div id="ryalModalIcon"></div>
+        <h3 id="ryalModalTitle"></h3>
+        <p id="ryalModalText"></p>
+        <div id="ryalModalActions"></div>
+    </div>
+</div>
 
 <div id="setupView" style="display:none; padding: 40px 20px; min-height: 100vh; display:flex; flex-direction:column; justify-content:center;">
     <div style="text-align:center; margin-bottom:25px; animation: fadeUp 0.3s ease-out;">
@@ -1086,6 +680,41 @@
 </div>
 
 <script>
+    /* --- CUSTOM RYAL MODAL ENGINE --- */
+    function openModal(title, text, icon, actionsHtml) {
+        document.getElementById('ryalModalTitle').innerText = title;
+        document.getElementById('ryalModalText').innerHTML = text;
+        document.getElementById('ryalModalIcon').innerHTML = `<i data-feather="${icon}" style="width:32px; height:32px; color:var(--info);"></i>`;
+        document.getElementById('ryalModalActions').innerHTML = actionsHtml;
+        const m = document.getElementById('ryalModal');
+        const b = document.getElementById('ryalModalBox');
+        m.style.display = 'flex';
+        setTimeout(() => { m.style.opacity = '1'; b.style.transform = 'scale(1)'; feather.replace(); }, 10);
+    }
+
+    function closeModal() {
+        const m = document.getElementById('ryalModal');
+        const b = document.getElementById('ryalModalBox');
+        m.style.opacity = '0'; b.style.transform = 'scale(0.9)';
+        setTimeout(() => { m.style.display = 'none'; }, 200);
+    }
+
+    function ryalAlert(title, text, icon="info") {
+        openModal(title, text, icon, `<button class="btn-main" style="width:100%;" onclick="closeModal()">Got it</button>`);
+    }
+
+    function ryalConfirm(title, text, confirmLabel, danger, onConfirm) {
+        let btnClass = danger ? 'btn-danger' : 'btn-main';
+        window.pendingConfirm = () => { closeModal(); onConfirm(); };
+        openModal(title, text, danger ? 'alert-triangle' : 'help-circle', `
+            <button class="btn-sub" style="flex:1;" onclick="closeModal()">Cancel</button>
+            <button class="${btnClass}" style="flex:1;" onclick="window.pendingConfirm()">${confirmLabel}</button>
+        `);
+    }
+
+    // Override default alert
+    window.alert = function(msg) { ryalAlert("System Message", msg); };
+
     feather.replace();
 
     /* --- DATA MANAGEMENT --- */
@@ -1119,19 +748,16 @@
             const dataStr = JSON.stringify({ trainer, clients, shifts, leads, workoutDB, expenses, schedule });
             const res = await fetch('https://jsonblob.com/api/jsonBlob', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'Accept': 'application/json' 
-                },
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: dataStr
             });
             const loc = res.headers.get('Location');
             const binId = loc.split('/').pop();
             
             localStorage.setItem('ryal_cloud_id', binId);
-            alert("SUCCESS! Your Cloud Recovery ID is:\n\n" + binId + "\n\nPlease copy and save this ID to your notes or WhatsApp. You will need it to recover your data if you clear your browser!");
+            ryalAlert("Cloud Sync Successful", "Your Cloud Recovery ID is:<br><br><b style='font-size:16px; color:var(--text);'>" + binId + "</b><br><br>Copy and save this ID to your notes. You will need it to recover your data if you clear your browser!", "cloud-check");
         } catch(err) {
-            alert("Error syncing to cloud. Check your internet connection.");
+            ryalAlert("Cloud Sync Failed", "Connection blocked by browser or ad-blocker. Please use the 'File' backup button instead.", "wifi-off");
         }
         btn.innerHTML = `<i data-feather="upload-cloud" class="icon"></i> Push Data to Cloud`;
         feather.replace();
@@ -1139,7 +765,7 @@
 
     async function pullFromCloud(event) {
         const id = document.getElementById('cloudRecoveryId').value.trim();
-        if(!id) return alert("Please enter a Recovery ID.");
+        if(!id) return ryalAlert("Missing Info", "Please enter a Recovery ID.", "alert-circle");
         
         const btn = event.currentTarget;
         btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin icon" style="margin-right:8px;"></i> Restoring...`;
@@ -1149,19 +775,21 @@
             if(!res.ok) throw new Error("Not found");
             const data = await res.json();
             
-            if(data.clients && confirm("Data found in Cloud! Overwrite your current device data?")) {
-                if(data.trainer) localStorage.setItem('ryal_trainer_v9', JSON.stringify(data.trainer));
-                if(data.clients) localStorage.setItem('ryal_pro_v9', JSON.stringify(data.clients));
-                if(data.shifts) localStorage.setItem('ryal_shifts_v9', JSON.stringify(data.shifts));
-                if(data.leads) localStorage.setItem('ryal_leads_v9', JSON.stringify(data.leads));
-                if(data.workoutDB) localStorage.setItem('ryal_workoutDB_v9', JSON.stringify(data.workoutDB));
-                if(data.expenses) localStorage.setItem('ryal_exp_v9', JSON.stringify(data.expenses));
-                if(data.schedule) localStorage.setItem('ryal_schedule_v9', JSON.stringify(data.schedule));
-                alert("Cloud Restore Complete! Reloading app...");
-                location.reload();
+            if(data.clients) {
+                ryalConfirm("Restore Data?", "Data found in Cloud! Overwrite your current device data?", "Restore", false, () => {
+                    if(data.trainer) localStorage.setItem('ryal_trainer_v9', JSON.stringify(data.trainer));
+                    if(data.clients) localStorage.setItem('ryal_pro_v9', JSON.stringify(data.clients));
+                    if(data.shifts) localStorage.setItem('ryal_shifts_v9', JSON.stringify(data.shifts));
+                    if(data.leads) localStorage.setItem('ryal_leads_v9', JSON.stringify(data.leads));
+                    if(data.workoutDB) localStorage.setItem('ryal_workoutDB_v9', JSON.stringify(data.workoutDB));
+                    if(data.expenses) localStorage.setItem('ryal_exp_v9', JSON.stringify(data.expenses));
+                    if(data.schedule) localStorage.setItem('ryal_schedule_v9', JSON.stringify(data.schedule));
+                    ryalAlert("Success", "Cloud Restore Complete! Reloading app...", "check-circle");
+                    setTimeout(() => location.reload(), 1500);
+                });
             }
         } catch(err) {
-            alert("Failed to find data. Make sure the Recovery ID is correct.");
+            ryalAlert("Error", "Failed to find data. Make sure the Recovery ID is correct or disable ad-blockers.", "x-circle");
         }
         btn.innerHTML = `<i data-feather="download-cloud" class="icon"></i> Restore Data`;
         feather.replace();
@@ -1174,9 +802,7 @@
         
         let up = schedule.filter(s => s.date >= today);
         let totalAll = 0;
-        up.forEach(s => {
-            totalAll += (s.est || 0);
-        });
+        up.forEach(s => { totalAll += (s.est || 0); });
 
         if(!cId) { 
             ui.innerHTML = `Total Planner Value: <b style="color:var(--text);">₹${totalAll.toFixed(0)}</b>`; 
@@ -1184,7 +810,6 @@
         }
         
         const c = clients.find(x => String(x.id) === String(cId));
-        
         if (!c) {
             ui.innerHTML = `Total Planner Value: <b style="color:var(--text);">₹${totalAll.toFixed(0)}</b>`; 
             return;
@@ -1203,20 +828,12 @@
         const t = document.getElementById('planTime').value;
         const w = document.getElementById('planWorkout').value || "General Workout";
         
-        if(!cId || !d || !t) return alert("Select client, date, and time.");
+        if(!cId || !d || !t) return ryalAlert("Missing Info", "Select client, date, and time.", "alert-circle");
         
         const c = clients.find(x => String(x.id) === String(cId));
         let amtPerSess = ((c.pay||0)/(1+(c.gst||0))*(c.ret||0))/(c.sess||1);
         
-        schedule.push({ 
-            id: Date.now(), 
-            clientId: cId, 
-            name: c.name, 
-            date: d, 
-            time: t, 
-            workout: w, 
-            est: amtPerSess 
-        });
+        schedule.push({ id: Date.now(), clientId: cId, name: c.name, date: d, time: t, workout: w, est: amtPerSess });
         localStorage.setItem('ryal_schedule_v9', JSON.stringify(schedule));
         
         document.getElementById('planTime').value = "";
@@ -1225,9 +842,11 @@
     }
     
     function delPlan(id) {
-        schedule = schedule.filter(s => String(s.id) !== String(id));
-        localStorage.setItem('ryal_schedule_v9', JSON.stringify(schedule));
-        renderPlanner();
+        ryalConfirm("Delete Session?", "Remove this planned session from your schedule?", "Delete", true, () => {
+            schedule = schedule.filter(s => String(s.id) !== String(id));
+            localStorage.setItem('ryal_schedule_v9', JSON.stringify(schedule));
+            renderPlanner();
+        });
     }
 
     function renderPlanner() {
@@ -1275,11 +894,11 @@
         let shiftOut = document.getElementById('trShiftOut').value;
         let salary = parseFloat(document.getElementById('trSalary').value);
 
-        if(!name || !salary) return alert("Name and Base Salary are required to initialize the engine.");
+        if(!name || !salary) return ryalAlert("Required", "Name and Base Salary are required to initialize the engine.", "alert-triangle");
 
         trainer = { name, phone, email, shiftIn, shiftOut, salary };
         localStorage.setItem('ryal_trainer_v9', JSON.stringify(trainer));
-
+        ryalAlert("Initialized", "Trainer profile created successfully.", "check-circle");
         initApp();
     }
 
@@ -1342,7 +961,7 @@
         const desc = document.getElementById('expDesc').value;
         const amt = parseFloat(document.getElementById('expAmt').value);
         
-        if(!amt || amt <= 0) return alert("Enter a valid amount");
+        if(!amt || amt <= 0) return ryalAlert("Invalid Amount", "Enter a valid expense amount.", "alert-circle");
         
         expenses.push({ id: Date.now(), date: d, cat: c, desc: desc, amt: amt });
         localStorage.setItem('ryal_exp_v9', JSON.stringify(expenses));
@@ -1353,34 +972,28 @@
     }
     
     function delExpense(id) {
-        if(!confirm("Delete expense?")) return;
-        expenses = expenses.filter(e => e.id !== id);
-        localStorage.setItem('ryal_exp_v9', JSON.stringify(expenses));
-        render();
+        ryalConfirm("Delete Expense?", "Remove this expense from your log?", "Delete", true, () => {
+            expenses = expenses.filter(e => String(e.id) !== String(id));
+            localStorage.setItem('ryal_exp_v9', JSON.stringify(expenses));
+            render();
+        });
     }
 
     /* --- SEARCH & SUGGEST EXERCISES --- */
     function searchEx(val) {
         const resDiv = document.getElementById('searchRes');
-        if (!val || val.length < 2) { 
-            resDiv.style.display = 'none'; 
-            return; 
-        }
+        if (!val || val.length < 2) { resDiv.style.display = 'none'; return; }
         
         let matches = []; 
         let searchLower = val.toLowerCase();
         
         Object.values(workoutDB).forEach(exList => {
             exList.forEach(ex => { 
-                if (ex.toLowerCase().includes(searchLower) && !matches.includes(ex)) { 
-                    matches.push(ex); 
-                } 
+                if (ex.toLowerCase().includes(searchLower) && !matches.includes(ex)) { matches.push(ex); } 
             });
         });
         
-        if (!matches.some(m => m.toLowerCase() === searchLower)) { 
-            matches.push(val + " (Custom)"); 
-        }
+        if (!matches.some(m => m.toLowerCase() === searchLower)) { matches.push(val + " (Custom)"); }
         
         resDiv.innerHTML = matches.map(ex => {
             let actualName = ex.replace(" (Custom)", "");
@@ -1404,9 +1017,7 @@
         
         if(isCustom) {
             let exists = false;
-            Object.values(workoutDB).forEach(list => { 
-                if(list.includes(name)) exists = true; 
-            });
+            Object.values(workoutDB).forEach(list => { if(list.includes(name)) exists = true; });
             if(!exists) {
                 workoutDB["Custom Exercises"].push(name);
                 localStorage.setItem('ryal_workoutDB_v9', JSON.stringify(workoutDB));
@@ -1415,7 +1026,7 @@
 
         curExName = name; 
         document.getElementById('curEx').innerText = name;
-        const c = clients.find(x => x.id === curID); 
+        const c = clients.find(x => String(x.id) === String(curID)); 
         lastPerfData = null;
         
         let dates = Object.keys(c.logs).sort().reverse();
@@ -1431,9 +1042,8 @@
         if(lastPerfData && lastPerfData.w && lastPerfData.r) {
             document.getElementById('historyRecallText').innerText = `Last: ${lastPerfData.w}kg × ${lastPerfData.r} (RPE ${lastPerfData.rpe||'-'})`;
             recUI.style.display = 'flex';
-        } else { 
-            recUI.style.display = 'none'; 
-        }
+        } else { recUI.style.display = 'none'; }
+        
         generateSetInputs(); 
         document.getElementById('setForm').style.display = 'block'; 
     }
@@ -1458,29 +1068,26 @@
         reader.onload = function(e) {
             try {
                 const data = JSON.parse(e.target.result);
-                if(data.clients && confirm("Overwrite current data?")) {
-                    if(data.trainer) localStorage.setItem('ryal_trainer_v9', JSON.stringify(data.trainer));
-                    localStorage.setItem('ryal_pro_v9', JSON.stringify(data.clients));
-                    if(data.shifts) localStorage.setItem('ryal_shifts_v9', JSON.stringify(data.shifts));
-                    if(data.leads) localStorage.setItem('ryal_leads_v9', JSON.stringify(data.leads));
-                    if(data.workoutDB) localStorage.setItem('ryal_workoutDB_v9', JSON.stringify(data.workoutDB));
-                    if(data.expenses) localStorage.setItem('ryal_exp_v9', JSON.stringify(data.expenses));
-                    if(data.schedule) localStorage.setItem('ryal_schedule_v9', JSON.stringify(data.schedule));
-                    alert("Backup loaded!"); 
-                    location.reload(); 
+                if(data.clients) {
+                    ryalConfirm("Load Backup?", "Overwrite current data with backup file?", "Load", false, () => {
+                        if(data.trainer) localStorage.setItem('ryal_trainer_v9', JSON.stringify(data.trainer));
+                        localStorage.setItem('ryal_pro_v9', JSON.stringify(data.clients));
+                        if(data.shifts) localStorage.setItem('ryal_shifts_v9', JSON.stringify(data.shifts));
+                        if(data.leads) localStorage.setItem('ryal_leads_v9', JSON.stringify(data.leads));
+                        if(data.workoutDB) localStorage.setItem('ryal_workoutDB_v9', JSON.stringify(data.workoutDB));
+                        if(data.expenses) localStorage.setItem('ryal_exp_v9', JSON.stringify(data.expenses));
+                        if(data.schedule) localStorage.setItem('ryal_schedule_v9', JSON.stringify(data.schedule));
+                        ryalAlert("Success", "Backup loaded!", "check-circle");
+                        setTimeout(() => location.reload(), 1500);
+                    });
                 }
-            } catch(err) { 
-                alert("Invalid backup file."); 
-            }
+            } catch(err) { ryalAlert("Error", "Invalid backup file.", "x-circle"); }
             event.target.value = ""; 
         }; 
         reader.readAsText(file);
     }
 
-    function toggleSec(id) { 
-        document.getElementById(id).classList.toggle('active'); 
-    }
-
+    function toggleSec(id) { document.getElementById(id).classList.toggle('active'); }
     function toggleGroup(id, el) { 
         const div = document.getElementById(id); 
         div.style.display = div.style.display === 'none' ? 'flex' : 'none'; 
@@ -1494,18 +1101,11 @@
         return `${hours % 12 || 12}:${m} ${ampm}`;
     }
 
-    function encodeToHash(obj) { 
-        return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))); 
-    }
-
-    function decodeFromHash(hash) { 
-        return JSON.parse(decodeURIComponent(escape(atob(hash)))); 
-    }
+    function encodeToHash(obj) { return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))); }
+    function decodeFromHash(hash) { return JSON.parse(decodeURIComponent(escape(atob(hash)))); }
 
     window.onload = function() {
-        if(localStorage.getItem('ryal_theme_v9') === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
+        if(localStorage.getItem('ryal_theme_v9') === 'dark') document.body.classList.add('dark-mode');
         
         if(window.location.hash.startsWith('#vip=')) {
             document.getElementById('appView').style.display = 'none';
@@ -1525,13 +1125,10 @@
 
     function generateMonthlyReportPDF() {
         let mStr = document.getElementById('reportMonthInput').value; 
-        if(!mStr) { alert("Please select a month first."); return; }
+        if(!mStr) return ryalAlert("Required", "Please select a month first.", "alert-circle");
         
         let tName = trainer ? trainer.name : "Trainer";
-
-        let clientRowsHtml = ''; 
-        let sr = 1; 
-        let totalPtEarnedThisMonth = 0;
+        let clientRowsHtml = ''; let sr = 1; let totalPtEarnedThisMonth = 0;
         
         clients.forEach(c => {
             let doneThisMonth = Object.keys(c.logs).filter(d => d.startsWith(mStr)).length;
@@ -1543,84 +1140,48 @@
                 totalPtEarnedThisMonth += earnedThisMonth;
                 clientRowsHtml += `
                     <tr>
-                        <td>${sr++}</td>
-                        <td><b>${c.name}</b></td>
-                        <td>${c.receipt || '-'}</td>
-                        <td>₹${c.pay || 0}</td>
-                        <td>${c.startDate || '-'}</td>
-                        <td>${c.endDate || '-'}</td>
-                        <td>${c.sess || 0}</td>
+                        <td>${sr++}</td><td><b>${c.name}</b></td><td>${c.receipt || '-'}</td><td>₹${c.pay || 0}</td>
+                        <td>${c.startDate || '-'}</td><td>${c.endDate || '-'}</td><td>${c.sess || 0}</td>
                         <td style="background:#e5f0ff; font-weight:bold; color:#1d1d1f;">${doneThisMonth}</td>
-                        <td>${remSess}</td>
-                        <td>₹${amtPerSess.toFixed(2)}</td>
-                        <td style="color:#007aff; font-weight:bold;">₹${earnedThisMonth.toFixed(2)}</td>
+                        <td>${remSess}</td><td>₹${amtPerSess.toFixed(2)}</td><td style="color:#007aff; font-weight:bold;">₹${earnedThisMonth.toFixed(2)}</td>
                     </tr>`;
             }
         });
         
-        if(clientRowsHtml === '') {
-            clientRowsHtml = `<tr><td colspan="11" style="text-align:center; padding:20px; color:#86868b;">No active client sessions recorded for this month.</td></tr>`;
-        }
+        if(clientRowsHtml === '') clientRowsHtml = `<tr><td colspan="11" style="text-align:center; padding:20px; color:#86868b;">No active client sessions recorded for this month.</td></tr>`;
         
-        let shiftRowsHtml = ''; 
-        let daysWorked = 0; 
-        let daysLate = 0; 
-        let daysWeekOff = 0; 
-        let daysAbsent = 0; 
-        let totalSalEarned = 0;
-        
+        let shiftRowsHtml = ''; let daysWorked = 0; let daysLate = 0; let daysWeekOff = 0; let daysAbsent = 0; let totalSalEarned = 0;
         let monthShifts = shifts.filter(s => s.date.startsWith(mStr)).sort((a,b) => new Date(a.date) - new Date(b.date));
+        
         monthShifts.forEach(s => {
             if(s.status === 'Present') daysWorked++; 
             if(s.isLate) daysLate++; 
             if(s.status === 'Week Off') daysWeekOff++; 
             if(s.status === 'Absent') daysAbsent++;
-            
             let hrs = 0;
             if(s.inTime && s.outTime) { 
                 let [inH, inM] = s.inTime.split(':').map(Number); 
                 let [outH, outM] = s.outTime.split(':').map(Number); 
                 hrs = ((outH * 60 + outM) - (inH * 60 + inM)) / 60; 
             }
-            
             totalSalEarned += (s.pay || 0); 
             let statusLabel = s.status; 
             if(s.isLate) statusLabel += ' (Late)'; 
             if(s.isHalfDay) statusLabel += ' (Half Day)';
-            
-            shiftRowsHtml += `
-                <tr>
-                    <td>${s.date}</td>
-                    <td>${statusLabel}</td>
-                    <td>${formatTime(s.inTime) || '-'}</td>
-                    <td>${formatTime(s.outTime) || '-'}</td>
-                    <td>${hrs.toFixed(1)} hrs</td>
-                    <td>₹${(s.pay || 0).toFixed(2)}</td>
-                </tr>`;
+            shiftRowsHtml += `<tr><td>${s.date}</td><td>${statusLabel}</td><td>${formatTime(s.inTime) || '-'}</td><td>${formatTime(s.outTime) || '-'}</td><td>${hrs.toFixed(1)} hrs</td><td>₹${(s.pay || 0).toFixed(2)}</td></tr>`;
         });
         
-        if(shiftRowsHtml === '') {
-            shiftRowsHtml = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#86868b;">No attendance shifts logged for this month.</td></tr>`;
-        }
+        if(shiftRowsHtml === '') shiftRowsHtml = `<tr><td colspan="6" style="text-align:center; padding:20px; color:#86868b;">No attendance shifts logged for this month.</td></tr>`;
         
-        let expRowsHtml = ''; 
-        let totalExpThisMonth = 0;
+        let expRowsHtml = ''; let totalExpThisMonth = 0;
         let monthExp = expenses.filter(e => e.date.startsWith(mStr)).sort((a,b) => new Date(a.date) - new Date(b.date));
         
         monthExp.forEach(e => {
             totalExpThisMonth += e.amt;
-            expRowsHtml += `
-                <tr>
-                    <td>${e.date}</td>
-                    <td><b>${e.cat}</b></td>
-                    <td>${e.desc || '-'}</td>
-                    <td style="color:#ff3b30; font-weight:bold;">₹${e.amt.toFixed(2)}</td>
-                </tr>`;
+            expRowsHtml += `<tr><td>${e.date}</td><td><b>${e.cat}</b></td><td>${e.desc || '-'}</td><td style="color:#ff3b30; font-weight:bold;">₹${e.amt.toFixed(2)}</td></tr>`;
         });
         
-        if(expRowsHtml === '') {
-            expRowsHtml = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#86868b;">No expenses logged for this month.</td></tr>`;
-        }
+        if(expRowsHtml === '') expRowsHtml = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#86868b;">No expenses logged for this month.</td></tr>`;
 
         let finalNet = (totalPtEarnedThisMonth + totalSalEarned) - totalExpThisMonth;
 
@@ -1652,17 +1213,9 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Sr.</th>
-                            <th>Client Name</th>
-                            <th>Receipt No</th>
-                            <th>Pkg ₹</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Total Sess.</th>
-                            <th style="background:#007aff; color:white;">Done (Month)</th>
-                            <th>Rem. Sess</th>
-                            <th>Your Cut / Sess</th>
-                            <th style="background:#007aff; color:white;">Earned (Month)</th>
+                            <th>Sr.</th><th>Client Name</th><th>Receipt No</th><th>Pkg ₹</th><th>Start Date</th><th>End Date</th>
+                            <th>Total Sess.</th><th style="background:#007aff; color:white;">Done (Month)</th><th>Rem. Sess</th>
+                            <th>Your Cut / Sess</th><th style="background:#007aff; color:white;">Earned (Month)</th>
                         </tr>
                     </thead>
                     <tbody>${clientRowsHtml}</tbody>
@@ -1671,29 +1224,13 @@
                 
                 <h2>2. Base Salary & Attendance Chart</h2>
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>In Time</th>
-                            <th>Out Time</th>
-                            <th>Hours</th>
-                            <th>Base Amount</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Date</th><th>Status</th><th>In Time</th><th>Out Time</th><th>Hours</th><th>Base Amount</th></tr></thead>
                     <tbody>${shiftRowsHtml}</tbody>
                 </table>
                 
                 <h2>3. Business Expenses</h2>
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Category</th>
-                            <th>Description</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Amount</th></tr></thead>
                     <tbody>${expRowsHtml}</tbody>
                 </table>
                 <div style="text-align:right; font-weight:800; font-size:16px;">Total Expenses (${mStr}): <span style="color:#ff3b30;">-₹${totalExpThisMonth.toFixed(2)}</span></div>
@@ -1717,7 +1254,7 @@
         const query = document.getElementById('mbName').value;
         const qty = parseFloat(document.getElementById('mbQty').value) || 100;
         
-        if(!query) return alert("Enter a food name to search.");
+        if(!query) return ryalAlert("Missing Info", "Enter a food name to search.", "alert-circle");
         
         const btn = event.currentTarget;
         const oldHtml = btn.innerHTML;
@@ -1745,30 +1282,22 @@
                 let officialName = food.description.toLowerCase().split(',')[0];
                 document.getElementById('mbName').value = officialName.charAt(0).toUpperCase() + officialName.slice(1);
             } else {
-                alert("Food not found in USDA database. Please enter macros manually.");
+                ryalAlert("Not Found", "Food not found in USDA database. Please enter macros manually.", "search");
             }
         } catch(e) {
-            alert("Error connecting to nutrition database. Please enter macros manually.");
+            ryalAlert("Connection Error", "Error connecting to nutrition database. Please enter macros manually.", "wifi-off");
         }
         btn.innerHTML = oldHtml;
     }
 
     function renderMealBuilder() {
-        const c = clients.find(x => x.id === curID);
+        const c = clients.find(x => String(x.id) === String(curID));
         const ui = document.getElementById('mealBuilderUI');
         
-        if(!c.tdee || !c.macros) { 
-            ui.style.display = 'none'; 
-            return; 
-        }
+        if(!c.tdee || !c.macros) { ui.style.display = 'none'; return; }
         
         let totalP=0, totalC=0, totalF=0, totalCal=0;
-        c.meals.forEach(m => { 
-            totalP += m.p; 
-            totalC += m.c; 
-            totalF += m.f; 
-            totalCal += (m.p*4 + m.c*4 + m.f*9); 
-        });
+        c.meals.forEach(m => { totalP+=m.p; totalC+=m.c; totalF+=m.f; totalCal+=(m.p*4 + m.c*4 + m.f*9); });
         
         let remCal = c.tdee - totalCal; 
         let remP = c.macros.p - totalP; 
@@ -1783,7 +1312,7 @@
                         P:${m.p}g | C:${m.c}g | F:${m.f}g | <b>${Math.round(m.p*4 + m.c*4 + m.f*9)}kcal</b>
                     </div>
                 </div>
-                <button class="btn-action danger" onclick="delMeal(${m.id})">
+                <button class="btn-action danger" onclick="delMeal('${m.id}')">
                     <i data-feather="trash-2" class="icon" style="margin:0;"></i>
                 </button>
             </div>
@@ -1833,13 +1362,13 @@
     }
 
     function addMeal() {
-        const c = clients.find(x => x.id === curID);
+        const c = clients.find(x => String(x.id) === String(curID));
         let n = document.getElementById('mbName').value; 
         let p = parseFloat(document.getElementById('mbP').value)||0; 
         let carb = parseFloat(document.getElementById('mbC').value)||0; 
         let f = parseFloat(document.getElementById('mbF').value)||0;
         
-        if(!n) return alert("Enter a food name");
+        if(!n) return ryalAlert("Missing Info", "Enter a food name", "alert-circle");
         
         c.meals.push({ id: Date.now(), name: n, p:p, c:carb, f:f });
         localStorage.setItem('ryal_pro_v9', JSON.stringify(clients)); 
@@ -1847,20 +1376,18 @@
     }
 
     function delMeal(id) {
-        const c = clients.find(x => x.id === curID);
-        c.meals = c.meals.filter(m => m.id !== id);
-        localStorage.setItem('ryal_pro_v9', JSON.stringify(clients)); 
-        renderMealBuilder();
+        ryalConfirm("Remove Food?", "Remove this from daily meal plan?", "Remove", true, () => {
+            const c = clients.find(x => String(x.id) === String(curID));
+            c.meals = c.meals.filter(m => String(m.id) !== String(id));
+            localStorage.setItem('ryal_pro_v9', JSON.stringify(clients)); 
+            renderMealBuilder();
+        });
     }
 
     function loadSplit(splitName) {
         const cont = document.getElementById('exTagsContainer'); 
         document.getElementById('setForm').style.display = 'none';
-        
-        if(!splitName) { 
-            cont.innerHTML = ""; 
-            return; 
-        }
+        if(!splitName) { cont.innerHTML = ""; return; }
         
         document.getElementById('logWorkoutName').value = document.getElementById('logWorkoutName').value || splitName;
         cont.innerHTML = workoutDB[splitName].map(ex => `
@@ -1874,15 +1401,14 @@
         curExName = name; 
         document.getElementById('curEx').innerText = name;
         
-        const c = clients.find(x => x.id === curID); 
+        const c = clients.find(x => String(x.id) === String(curID)); 
         lastPerfData = null;
         let dates = Object.keys(c.logs).sort().reverse();
         
         for(let d of dates) {
             let found = c.logs[d].find(l => l.name === name);
             if(found && found.sets && found.sets.length > 0) { 
-                lastPerfData = found.sets[0]; 
-                break; 
+                lastPerfData = found.sets[0]; break; 
             }
         }
         
@@ -1890,9 +1416,7 @@
         if(lastPerfData && lastPerfData.w && lastPerfData.r) {
             document.getElementById('historyRecallText').innerText = `Last: ${lastPerfData.w}kg × ${lastPerfData.r} (RPE ${lastPerfData.rpe||'-'})`;
             recUI.style.display = 'flex';
-        } else { 
-            recUI.style.display = 'none'; 
-        }
+        } else { recUI.style.display = 'none'; }
         
         generateSetInputs(); 
         document.getElementById('setForm').style.display='block'; 
@@ -1900,7 +1424,6 @@
 
     function applyProgression(type) {
         if(!lastPerfData) return;
-        
         let baseW = parseFloat(lastPerfData.w); 
         let baseR = parseInt(lastPerfData.r);
         let newW = baseW; 
@@ -1946,9 +1469,9 @@
             if (w || r) setsData.push({ set: i, w, r, rpe });
         }
         
-        if(setsData.length === 0) return alert("Enter details.");
+        if(setsData.length === 0) return ryalAlert("Missing Info", "Enter set details before saving.", "alert-circle");
         
-        const c = clients.find(x => x.id === curID); 
+        const c = clients.find(x => String(x.id) === String(curID)); 
         if(!c.logs[d]) c.logs[d] = [];
         c.logs[d].push({ id: Date.now(), workoutName: wName, name: curExName, sets: setsData });
         
@@ -1956,10 +1479,11 @@
         document.getElementById('setForm').style.display='none'; 
         renderTonnageChart(); 
         render();
+        ryalAlert("Saved", "Exercise logged successfully.", "check");
     }
 
     function renderTonnageChart() {
-        const c = clients.find(x => x.id === curID);
+        const c = clients.find(x => String(x.id) === String(curID));
         if(tonnageChartInst) tonnageChartInst.destroy();
         
         let tonnageMap = {};
@@ -1967,9 +1491,7 @@
             let dayTotal = 0;
             c.logs[date].forEach(ex => { 
                 if(ex.sets) {
-                    ex.sets.forEach(s => { 
-                        dayTotal += (parseFloat(s.w)||0) * (parseInt(s.r)||0); 
-                    }); 
+                    ex.sets.forEach(s => { dayTotal += (parseFloat(s.w)||0) * (parseInt(s.r)||0); }); 
                 }
             });
             if(dayTotal > 0) tonnageMap[date] = dayTotal;
@@ -1982,20 +1504,8 @@
         
         tonnageChartInst = new Chart(ctx, { 
             type: 'bar', 
-            data: { 
-                labels: dates, 
-                datasets: [{ 
-                    label: 'Tonnage (kg lifted)', 
-                    data: vols, 
-                    backgroundColor: barColor, 
-                    borderRadius: 4 
-                }] 
-            }, 
-            options: { 
-                responsive: true, 
-                plugins: { legend: { display: false } }, 
-                scales: { x: { display: false } } 
-            } 
+            data: { labels: dates, datasets: [{ label: 'Tonnage (kg lifted)', data: vols, backgroundColor: barColor, borderRadius: 4 }] }, 
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { display: false } } } 
         });
     }
 
@@ -2018,7 +1528,7 @@
                     <input type="date" id="trialDate_${l.id}" value="${today}" style="padding:6px; font-size:11px; margin-bottom:5px;">
                     <input type="text" id="trialAct_${l.id}" placeholder="What we did (e.g. Assessment)" style="padding:6px; font-size:11px; margin-bottom:5px;">
                     <input type="text" id="trialRem_${l.id}" placeholder="Remark (e.g. Needs push)" style="padding:6px; font-size:11px; margin-bottom:5px;">
-                    <button class="btn-sub" style="padding:6px; font-size:11px; width:100%; border-color:var(--info); color:var(--info);" onclick="logTrial(${l.id})">Save Trial</button>
+                    <button class="btn-sub" style="padding:6px; font-size:11px; width:100%; border-color:var(--info); color:var(--info);" onclick="logTrial('${l.id}')">Save Trial</button>
                 </div>
             ` : `
                 <div style="margin-top:10px; font-size:11px; color:var(--warning); font-weight:700;">
@@ -2045,8 +1555,8 @@
                     ${trialList}
                     ${nextTrialForm}
                     <div style="display:flex; gap:10px; margin-top:12px;">
-                        <button class="btn-main" style="flex:1; padding:8px; font-size:11px;" onclick="convertLead(${l.id})">Convert to Client</button>
-                        <button class="btn-action danger" style="padding:8px; font-size:11px;" onclick="delLead(${l.id})"><i data-feather="trash-2" class="icon" style="margin:0;"></i></button>
+                        <button class="btn-main" style="flex:1; padding:8px; font-size:11px;" onclick="convertLead('${l.id}')">Convert to Client</button>
+                        <button class="btn-action danger" style="padding:8px; font-size:11px;" onclick="delLead('${l.id}')"><i data-feather="trash-2" class="icon" style="margin:0;"></i></button>
                     </div>
                 </div>
             </div>`;
@@ -2069,7 +1579,7 @@
                 <span>
                     <i data-feather="clock" class="icon" style="color:#86868b;"></i> ${s.date} | <b>${s.status}</b> ${s.isLate?'<span class="badge danger">LATE</span>':''}${s.isHalfDay?'<span class="badge warning">HALF</span>':''}
                 </span>
-                <button class="btn-action danger" onclick="delShift(${s.id})"><i data-feather="trash-2" class="icon" style="margin:0;"></i></button>
+                <button class="btn-action danger" onclick="delShift('${s.id}')"><i data-feather="trash-2" class="icon" style="margin:0;"></i></button>
             </div>
         `).join("");
 
@@ -2084,7 +1594,7 @@
                 </span>
                 <div style="display:flex; align-items:center; gap:10px;">
                     <b style="color:var(--danger);">₹${e.amt}</b>
-                    <button class="btn-action danger" onclick="delExpense(${e.id})"><i data-feather="trash-2" class="icon" style="margin:0;"></i></button>
+                    <button class="btn-action danger" onclick="delExpense('${e.id}')"><i data-feather="trash-2" class="icon" style="margin:0;"></i></button>
                 </div>
             </div>
         `).join("");
@@ -2130,7 +1640,7 @@
                         <div class="history-row bg-override" style="flex-direction:column; align-items:flex-start; background:var(--card); margin-bottom:5px; border-radius:8px; padding:10px; border:1px solid var(--border);">
                             <div style="display:flex; justify-content:space-between; width:100%;">
                                 <span style="font-weight:700; font-size:12px; color:var(--text);">${log.name}</span>
-                                <button class="btn-action danger" onclick="delLog(${c.id}, '${date}', ${log.id})"><i data-feather="trash-2" class="icon" style="margin:0;"></i></button>
+                                <button class="btn-action danger" onclick="delLog('${c.id}', '${date}', '${log.id}')"><i data-feather="trash-2" class="icon" style="margin:0;"></i></button>
                             </div>
                             <div style="margin-top:5px; width:100%;">${sets}</div>
                         </div>
@@ -2141,10 +1651,10 @@
             
             rosterHtml += `
                 <tr style="${rowStyle} transition:background 0.3s;">
-                    <td><span class="client-link" onclick="openOv(${c.id})">${c.name}</span>${badge}</td>
+                    <td><span class="client-link" onclick="openOv('${c.id}')">${c.name}</span>${badge}</td>
                     <td><b style="color:#86868b; font-size:11px;">${formatTime(c.slot)||'-'}</b></td>
                     <td style="color:var(--text);"><b>${done}</b> / ${c.sess}</td>
-                    <td style="text-align:right;"><button class="btn-action" onclick="toggleHistory(${c.id})">Logs</button></td>
+                    <td style="text-align:right;"><button class="btn-action" onclick="toggleHistory('${c.id}')">Logs</button></td>
                 </tr>
                 <tr id="hist-${c.id}" style="display:none;">
                     <td colspan="4"><div class="history-pane">${histRows||'No logs.'}</div></td>
